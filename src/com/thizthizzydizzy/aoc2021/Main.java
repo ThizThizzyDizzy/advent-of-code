@@ -5,5 +5,7 @@ public class Main{
         new Day1().run();
         System.out.println("Day 2");
         new Day2().run();
+        System.out.println("Day 3");
+        new Day3().run();
     }
 }
