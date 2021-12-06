@@ -11,5 +11,7 @@ public class Main{
         new Day4().run();
         System.out.println("Day 5");
         new Day5().run();
+        System.out.println("Day 6");
+        new Day6().run();
     }
 }
