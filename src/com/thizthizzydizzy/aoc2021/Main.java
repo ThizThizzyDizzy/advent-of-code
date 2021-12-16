@@ -29,5 +29,9 @@ public class Main{
         new Day13().run();
         System.out.println("Day 14");
         new Day14().run();
+        System.out.println("Day 15");
+        new Day15().run();
+        System.out.println("Day 16");
+        new Day16().run();
     }
 }
