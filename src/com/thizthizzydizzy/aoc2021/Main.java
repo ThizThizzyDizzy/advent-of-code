@@ -41,7 +41,9 @@ public class Main{
 //        new Day19().run();
 //        System.out.println("Day 20");
 //        new Day20().run();
-        System.out.println("Day 21");
-        new Day21().run();
+//        System.out.println("Day 21");
+//        new Day21().run();
+        System.out.println("Day 22");
+        new Day22().run();
     }
 }
