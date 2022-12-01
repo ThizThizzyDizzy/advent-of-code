@@ -1,12 +1,14 @@
 package aoc2022.java.days;
 import aoc2022.java.Day;
+import java.util.ArrayList;
+import java.util.Collections;
 public class Day1 extends Day{
     public Day1(String input){
         super(input);
     }
     @Override
     public void run() {
-        int max = 0;
+        ArrayList<Integer> elves = new ArrayList<>();
         String[] strs = input.split("\n");
         int current = 0;
         for(String s : strs){
@@ -14,12 +16,14 @@ public class Day1 extends Day{
                 int i = Integer.parseInt(s);
                 current+=i;
             }catch(NumberFormatException ex){
-                if(current>max)max = current;
+                elves.add(current);
                 current = 0;
             }
         }
-        if(current>max)max = current;
+        if(current>0)elves.add(current);
         current = 0;
-        System.out.println(max);
+        Collections.sort(elves);
+        System.out.println(elves.get(elves.size()-1));
+        System.out.println(elves.get(elves.size()-1)+elves.get(elves.size()-2)+elves.get(elves.size()-3));
     }
 }
