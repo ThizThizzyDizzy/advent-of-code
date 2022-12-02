@@ -3,33 +3,24 @@
 /top2 0 def
 /top3 0 def
 0
-0
 input {
     {  + } foreach
-    'n'
-    exch dup top1 > {
+    dup top1 > {
         //push the top two down
         /top3 top2 =
         /top2 top1 =
         /top1 exch =
-        pop
-        'y'
-    } if
-    exch 'n' == { //this is a fancy else
-        'n'
-        exch dup top2 > {
+    } {
+        dup top2 > {
             //push that one down
             /top3 top2 =
             /top2 exch =
-            pop
-            'y'
-        } if
-        exch 'n' == {
+        } {
             dup top3 > {
                 /top3 exch =
             } if
-        } if
-    } if
+        } ifelse
+    } ifelse
     0
 } foreach
 top1 println
