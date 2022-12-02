@@ -15,6 +15,7 @@
             /s s chr ~ =
         } ifelse
     } foreach
+    s string
     ] tuple
 } def
 /input [ [
