@@ -36,13 +36,16 @@ public abstract class Day{
         File f = new File("src/aoc2022/dssl/base/"+name+".dssl");
         if(!f.exists()){
             try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)))){
-                writer.write("/input "+dsslFormat(input)+" tuple def");
+                writer.write("/input "+dsslFormat(input)+" def");
             }catch(IOException ex){
                 Logger.getLogger(Day.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
     private String dsslFormat(String s) {
+        if(true){
+            return "\""+s.replace("\n", "\\n")+"\"";
+        }
         //figure out what kind of thing it is
         boolean allNumbers = true;
         int longestNewlineChain = 0;
