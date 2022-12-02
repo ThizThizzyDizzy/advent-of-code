@@ -13,5 +13,28 @@
                 /s s chr ~ =
             } ifelse
         } foreach
+        s string
     ] tuple
 } def
+/calc {
+    mei opi 1 + == mei opi 2 - == | { 6 } { mei opi == { 3 } { 0 } ifelse } ifelse
+} def
+/total 0 def
+input '\n' split exec {
+    tuple unpack exch pop
+    /me exch def
+    /op exch def
+    /opi
+    op 'A' == { 1 } if
+    op 'B' == { 2 } if
+    op 'C' == { 3 } if
+    def
+    /mei
+    me 'X' == { 1 } if
+    me 'Y' == { 2 } if
+    me 'Z' == { 3 } if
+    def
+    calc exec
+    /total exch mei + +=
+} foreach
+total print

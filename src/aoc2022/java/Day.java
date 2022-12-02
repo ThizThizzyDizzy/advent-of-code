@@ -36,7 +36,25 @@ public abstract class Day{
         File f = new File("src/aoc2022/dssl/base/"+name+".dssl");
         if(!f.exists()){
             try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)))){
-                writer.write("/input "+dsslFormat(input)+" def");
+                writer.write("/input "+dsslFormat(input)+" def\n"
+                        + "/split {\n" +
+"    /sep exch def\n" +
+"    /str exch def\n" +
+"    /s \"\" def\n" +
+"    [\n" +
+"        str tuple {\n" +
+"            /chr exch def\n" +
+"            chr sep == {\n" +
+"                s string //gets around another bug; it thinks it's a pointer again\n" +
+"                /s \"\" =\n" +
+"        } {\n" +
+"                /s s chr ~ =\n" +
+"            } ifelse\n" +
+"        } foreach\n" +
+"        s string" +
+"    ] tuple\n" +
+"} def\n" +
+"");
             }catch(IOException ex){
                 Logger.getLogger(Day.class.getName()).log(Level.SEVERE, null, ex);
             }
