@@ -37,4 +37,25 @@ input '\n' split exec {
     calc exec
     /total exch mei + +=
 } foreach
-total print
+total println
+/total 0 =
+input '\n' split exec {
+    tuple unpack exch pop
+    /me exch def
+    /op exch def
+    /opi
+    op 'A' == { 1 } if
+    op 'B' == { 2 } if
+    op 'C' == { 3 } if
+    def
+    /mei
+    me 'X' == { opi 1 - } if
+    me 'Y' == { opi int } if
+    me 'Z' == { opi 1 + } if
+    def
+    mei 0 == { /mei 3 = } if
+    mei 4 == { /mei 1 = } if
+    calc exec
+    /total exch mei + +=
+} foreach
+total println
