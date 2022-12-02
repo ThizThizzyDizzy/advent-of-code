@@ -3,8 +3,8 @@ import aoc2022.java.Day;
 import java.util.ArrayList;
 import java.util.Collections;
 public class Day1 extends Day{
-    public Day1(String input){
-        super(input);
+    public Day1(){
+        super(1);
     }
     @Override
     public void run() {

@@ -3,7 +3,7 @@ import aoc2022.java.days.*;
 public class Main{
     public static Day[] days = new Day[25];
     static{
-        days[0] = new Day1("day1.txt");
+        days[0] = new Day1();
     }
     public static void main(String[] args){
         for(int i = 0; i<25; i++){
