@@ -46,7 +46,7 @@
 input '\n' split exec {
     tuple dup size /siz exch def
     dup /comp1 exch [ exch unpack [ siz 2 / ] range { pop pop } foreach ] tuple def
-    dup /comp2 exch [ exch {
+    /comp2 exch [ exch {
         siz 2 / 0 > {
             pop
             /siz 2 -=
@@ -56,6 +56,23 @@ input '\n' split exec {
     comp1 {
         dup
         comp2 exch contains exec {
+            /common exch =
+        } { pop } ifelse
+    } foreach
+    /score common char prior exec +=
+} foreach
+score println
+/score 0 =
+input '\n' split exec dup size 3 / /siz exch def unpack
+[ siz ] range {
+    pop
+    /common ' ' def
+    /rc1 exch tuple def
+    /rc2 exch tuple def
+    /rc3 exch tuple def
+    rc1 {
+        dup dup
+        rc2 exch contains exec exch rc3 exch contains exec & {
             /common exch =
         } { pop } ifelse
     } foreach
