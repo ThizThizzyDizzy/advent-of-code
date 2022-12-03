@@ -21,6 +21,21 @@ public class Day3 extends Day{
             score+=priority(common);
         }
         System.out.println(score);
+        score = 0;
+        for(int i = 0; i<rucksacks.length-2; i+=3){
+            String rc1 = rucksacks[i];
+            String rc2 = rucksacks[i+1];
+            String rc3 = rucksacks[i+2];
+            char common = ' ';
+            for(char c : rc1.toCharArray()){
+                if(rc2.contains(c+"")&&rc3.contains(c+"")){
+                    common = c;
+                    break;
+                }
+            }
+            score+=priority(common);
+        }
+        System.out.println(score);
     }
     public int priority(char c){
         if(c>='a'&&c<='z')return c-'a'+1;
