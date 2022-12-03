@@ -5,6 +5,7 @@ public class Main{
     static{
         days[0] = new Day1();
         days[1] = new Day2();
+        days[1] = new Day3();
     }
     public static void main(String[] args){
         for(int i = 0; i<25; i++){
