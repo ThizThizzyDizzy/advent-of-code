@@ -3,16 +3,12 @@
     /sep exch def
     /str exch def
     /s "" def
-    [
-        str tuple {
-            /chr exch def
-            chr sep == {
-                s string //gets around another bug; it thinks it's a pointer again
-                /s "" =
+    [ str tuple {
+        /chr exch def
+        chr sep == {
+            s /s "" =
         } {
-                /s s chr ~ =
-            } ifelse
-        } foreach
-    ] tuple
-    s string
+            /s s chr ~ =
+        } ifelse
+    } foreach s ] tuple
 } def
