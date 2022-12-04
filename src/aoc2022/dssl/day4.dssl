@@ -16,6 +16,7 @@
         s string    ] tuple
 } def
 /cnt 0 def
+/cnt2 0 def
 input tuple '\n' split exec {
     ',' split exec unpack '-' split exec exch '-' split exec
     unpack
@@ -25,5 +26,7 @@ input tuple '\n' split exec {
     /r2b exch 0 type cast def
     /r2a exch 0 type cast def
     r2a r1a >= r2b r1b <= & r1a r2a >= r1b r2b <= & | { /cnt ++ } if
+    r2a r1b <= r2b r1a >= & r1a r2b <= r1b r2a >= & | { /cnt2 ++ } if
 } foreach
 cnt println
+cnt2 println
