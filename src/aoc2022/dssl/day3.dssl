@@ -13,7 +13,8 @@
                 /s s chr ~ =
             } ifelse
         } foreach
-        s string    ] tuple
+        s string
+    ] tuple
 } def
 /contains {
     /chr exch def
