@@ -7,6 +7,7 @@ public class Day4 extends Day{
     @Override
     public void run() {
         int count = 0;
+        int count2 = 0;
         for(String s : input.split("\n")){
             String[] ranges = s.split(",");
             String[] r1 = ranges[0].split("-");
@@ -16,7 +17,9 @@ public class Day4 extends Day{
             int r2a = Integer.parseInt(r2[0]);
             int r2b = Integer.parseInt(r2[1]);
             if(r2a>=r1a&&r2b<=r1b||r1a>=r2a&&r1b<=r2b)count++;
+            if(r2a<=r1b&&r2b>=r1a||r1a<=r2b&&r1b>=r2a)count2++;
         }
         System.out.println(count);
+        System.out.println(count2);
     }
 }
