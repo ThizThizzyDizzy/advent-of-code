@@ -58,3 +58,42 @@ instructions {
 [ numStacks ] range {
     "stack" exch ~ interpret dup size 1 - get print
 } foreach
+"" println
+//part 2, reset the input
+[ numStacks ] range {
+    "/stack" exch ~ interpret [ ] tuple
+} foreach = = = = = = = = =
+[ numStacks ] range {
+    dup /s exch def
+    "/stack" exch ~ interpret
+    [ [ setup size 1 - -1 -1 ] range {
+        setup exch get tuple s 4 * 1 + get
+        dup ' ' == { pop } if
+    } foreach ] tuple =
+} foreach //input is reset
+/workingStack [ ] tuple def
+instructions {
+    ' ' split exec unpack
+    /to exch int 1 - def pop
+    /from exch int 1 - def pop
+    /move exch int def pop
+    [ move ] range {
+        pop
+        "stack" from ~ interpret spop exec
+        /elem exch def
+        "/stack" from ~ interpret exch =
+        workingStack elem spush exec
+        /workingStack exch =
+    } foreach
+    [ move ] range {
+        pop
+        workingStack spop exec
+        /elem exch def
+        /workingStack exch =
+        "stack" to ~ interpret elem spush exec
+        "/stack" to ~ interpret exch =
+    } foreach
+} foreach
+[ numStacks ] range {
+    "stack" exch ~ interpret dup size 1 - get print
+} foreach
