@@ -17,11 +17,11 @@
 input tuple '\n' split exec {
     ',' split exec unpack '-' split exec exch '-' split exec
     unpack
-    /r1b exch 0 type cast def
-    /r1a exch 0 type cast def
+    /r1b exch int def
+    /r1a exch int def
     unpack
-    /r2b exch 0 type cast def
-    /r2a exch 0 type cast def
+    /r2b exch int def
+    /r2a exch int def
     r2a r1a >= r2b r1b <= & r1a r2a >= r1b r2b <= & | { /cnt ++ } if
     r2a r1b <= r2b r1a >= & r1a r2b <= r1b r2a >= & | { /cnt2 ++ } if
 } foreach

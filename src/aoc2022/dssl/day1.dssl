@@ -18,7 +18,7 @@ input '\n' split exec {
     s "" == {
         ] tuple [
     } {
-        s 0 type cast
+        s int
     } ifelse
 } foreach
 ] tuple ] tuple =
