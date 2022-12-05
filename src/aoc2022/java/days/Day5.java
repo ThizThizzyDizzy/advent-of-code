@@ -1,7 +1,6 @@
 package aoc2022.java.days;
 import aoc2022.java.Stack;
 import aoc2022.java.Day;
-import java.util.Arrays;
 public class Day5 extends Day{
     public Day5(){
         super(5);
@@ -28,6 +27,33 @@ public class Day5 extends Day{
             int to = Integer.parseInt(instruction[5]);
             for(int i = 0; i<count; i++){
                 stacks[to-1].push(stacks[from-1].pop());
+            }
+        }
+        String output = "";
+        for(Stack st : stacks){
+            output+=st.peek();
+        }
+        System.out.println(output);
+        //part 2
+        for(int i = 0; i<stacks.length; i++)stacks[i].clear();
+        for(int i = inputStacks.length-2; i>=0; i--){
+            for(int s = 0; s<stacks.length; s++){
+                char c = inputStacks[i].charAt(s*4+1);
+                if(c==' ')continue;
+                stacks[s].push(c);
+            }
+        }
+        for(String s : instructions){
+            String[] instruction = s.split(" ");
+            int count = Integer.parseInt(instruction[1]);
+            int from = Integer.parseInt(instruction[3]);
+            int to = Integer.parseInt(instruction[5]);
+            Stack<Character> interimStack = new Stack<>();
+            for(int i = 0; i<count; i++){
+                interimStack.push(stacks[from-1].pop());
+            }
+            for(int i = 0; i<count; i++){
+                stacks[to-1].push(interimStack.pop());
             }
         }
         String s = "";
