@@ -8,6 +8,7 @@ public class Main{
         days[2] = new Day3();
         days[3] = new Day4();
         days[4] = new Day5();
+        days[5] = new Day6();
     }
     public static void main(String[] args){
         for(int i = 0; i<25; i++){
