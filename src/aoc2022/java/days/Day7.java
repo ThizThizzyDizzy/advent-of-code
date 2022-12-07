@@ -28,6 +28,9 @@ public class Day7 extends Day{
         }
         files.calculateSize();
         System.out.println(files.sumTotal(100000));
+        long freeSpace = 70000000 - files.size;
+        long spaceNeeded = 30000000-freeSpace;
+        System.out.println(files.smallestDir(spaceNeeded));
     }
     private static class Dir {
         public HashMap<String, Dir> dirs = new HashMap<>();
@@ -47,6 +50,14 @@ public class Day7 extends Day{
             for(Dir dir : dirs.values())sumTotal+=dir.sumTotal(max);
             if(size<=max)sumTotal+=size;
             return sumTotal;
+        }
+        private long smallestDir(long minSize){
+            long l = Long.MAX_VALUE;
+            if(size>=minSize)l = size;
+            for(Dir d : dirs.values()){
+                l = Math.min(l, d.smallestDir(minSize));
+            }
+            return l;
         }
     }
 }
