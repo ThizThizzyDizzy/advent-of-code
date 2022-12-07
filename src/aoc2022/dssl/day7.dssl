@@ -127,11 +127,19 @@ dirs keys {
     } foreach
     added 0 == { break } if
 } loop
+//forgot the files for / apparently
+files "/_" get {
+    filesizes exch "/_" exch ~ get
+    /siz exch def
+    dirsizes "/_"
+    dirsizes "/_" get siz +
+    put pop
+} foreach
+//okay DONE WITH THE COUNTING, FINALLY
+//(I'm going insane)
 /val 0 def
-/v 0 def
 dirsizes keys {
     dirsizes exch get
-    /v ++
     dup 100000 <= {
         /val exch +=
     } {
@@ -139,3 +147,19 @@ dirsizes keys {
     } ifelse
 } foreach
 val println
+/val2 0 def
+/needed 30000000 70000000 dirsizes "/_" get - - def
+/smallest needed 100 * def //100x should be a good buffer
+dirsizes keys {
+    dirsizes exch get
+    dup needed >= {
+        dup smallest < {
+            /smallest exch =
+        } {
+            pop
+        } ifelse
+    } {
+        pop
+    } ifelse
+} foreach
+smallest println
