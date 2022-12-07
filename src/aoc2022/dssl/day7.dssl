@@ -138,8 +138,7 @@ files "/_" get {
 //okay DONE WITH THE COUNTING, FINALLY
 //(I'm going insane)
 /val 0 def
-dirsizes keys {
-    dirsizes exch get
+dirsizes values {
     dup 100000 <= {
         /val exch +=
     } {
@@ -150,8 +149,7 @@ val println
 /val2 0 def
 /needed 30000000 70000000 dirsizes "/_" get - - def
 /smallest needed 100 * def //100x should be a good buffer
-dirsizes keys {
-    dirsizes exch get
+dirsizes values {
     dup needed >= {
         dup smallest < {
             /smallest exch =
