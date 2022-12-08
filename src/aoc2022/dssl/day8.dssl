@@ -12,6 +12,12 @@
         } ifelse
     } foreach s ] tuple
 } def
+/max {
+    /a exch def
+    dup a < {
+        pop a
+    } if
+} def
 /rows input '\n' split exec def
 /h rows size def
 /w rows 0 get tuple size def
@@ -62,3 +68,45 @@
 0
 visible { { { 1 + } if } foreach } foreach
 println
+/highest 0 def
+[ h ] range {
+    /y exch def
+    [ w ] range {
+        /x exch def
+        /tree trees y get x get def
+        /top 0 def
+        /right 0 def
+        /bottom 0 def
+        /left 0 def
+        [ 1 w h max exec ] range {
+            /i exch def
+            top 0 <= i y <= & {
+                /other trees y i - get x get def
+                /top --
+                other tree >= { /top top neg = } if
+            } if
+            left 0 <= i x <= & {
+                /other trees y get x i - get def
+                /left --
+                other tree >= { /left left neg = } if
+            } if
+            bottom 0 <= i y + h < & {
+                /other trees y i + get x get def
+                /bottom --
+                other tree >= { /bottom bottom neg = } if
+            } if
+            right 0 <= i x + w < & {
+                /other trees y get x i + get def
+                /right --
+                other tree >= { /right right neg = } if
+            } if
+        } foreach
+        top 0 < { /top top neg = } if
+        right 0 < { /right right neg = } if
+        bottom 0 < { /bottom bottom neg = } if
+        left 0 < { /left left neg = } if
+        top right bottom left * * *
+        dup highest > { /highest exch = } if
+    } foreach
+} foreach
+highest println
