@@ -59,12 +59,48 @@ public class Day8 extends Day{
                 }
             }
         }
-        int i = 0;
+        int numVisible = 0;
         for(var bs : visible){
             for(var b : bs){
-                if(b)i++;
+                if(b)numVisible++;
             }
         }
-        System.out.println(i);
+        System.out.println(numVisible);
+        int highest = 0;
+        for(int y = 0; y<height; y++){
+            for(int x = 0; x<width; x++){
+                int tree = trees[y][x];
+                int top = 0, right = 0, bottom = 0, left = 0;
+                for(int i = 1; i<Math.max(width, height); i++){//all four directions at once! fancy!
+                    if(top<=0&&i<=y){//top
+                        int other = trees[y-i][x];
+                        top--;
+                        if(other>=tree)top*=-1;//make it positive; stop checking
+                    }
+                    if(left<=0&&i<=x){//left
+                        int other = trees[y][x-i];
+                        left--;
+                        if(other>=tree)left*=-1;//make it positive; stop checking
+                    }
+                    if(bottom<=0&&i+y<height){
+                        int other = trees[y+i][x];
+                        bottom--;
+                        if(other>=tree)bottom*=-1;//make it positive; stop checking
+                    }
+                    if(right<=0&&i+x<width){
+                        int other = trees[y][x+i];
+                        right--;
+                        if(other>=tree)right*=-1;//make it positive; stop checking
+                    }
+                }
+                if(top<0)top*=-1;
+                if(right<0)right*=-1;
+                if(left<0)left*=-1;
+                if(bottom<0)bottom*=-1;
+                int score = top*right*bottom*left;
+                if(score>highest)highest = score;
+            }
+        }
+        System.out.println(highest);
     }
 }
