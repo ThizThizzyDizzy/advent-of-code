@@ -12,3 +12,72 @@
         } ifelse
     } foreach s ] tuple
 } def
+/substr {
+    /begin exch def
+    /str exch def
+    /s "" def
+    str tuple {
+        begin 0 > {
+            pop
+            /begin --
+        } {
+            /s exch ~=
+        } ifelse
+    } foreach s
+} def
+/abs {
+    dup 0 < { neg } if
+} def
+/max {
+    /a exch def
+    dup a < {
+        pop a
+    } if
+} def
+/sign {
+    dup 0 == not { 0 < { -1 } { 1 } ifelse } if
+} def
+/sim {
+    /len exch def
+    /visited [ ] set def
+    /rx [ [ len ] range { pop 0 } foreach ] list def
+    /ry [ [ len ] range { pop 0 } foreach ] list def
+    visited rx len 1 - get "," ~ ry len 1 - get ~ add pop
+    input '\n' split exec {
+        /s exch def
+        /dir s tuple 0 get def
+        /dist s 2 substr exec int def
+        [ dist ] range {
+            pop
+            /dx 0 def
+            dir 'L' == { /dx -1 = } if
+            dir 'R' == { /dx 1 = } if
+            /dy 0 def
+            dir 'U' == { /dy -1 = } if
+            dir 'D' == { /dy 1 = } if
+            rx 0 rx 0 get dx + put pop
+            ry 0 ry 0 get dy + put pop
+            [ 1 len ] range {
+                /i exch def
+                /hx rx i 1 - get def
+                /hy ry i 1 - get def
+                /tx rx i get def
+                /ty ry i get def
+                /dst hx tx - abs exec hy ty - abs exec max exec def
+                dst 1 > {
+                    /Y hx tx == def
+                    /X hy ty == def
+                    X Y | not { /X true = /Y true = } if
+                    X { /tx hx tx - sign exec += } if
+                    Y { /ty hy ty - sign exec += } if
+                    rx i tx put pop
+                    ry i ty put pop
+                } if
+            } foreach
+            visited rx len 1 - get "," ~ ry len 1 - get ~ add pop
+        } foreach
+    } foreach
+    visited size
+} def
+2 sim exec println
+10 sim exec println
