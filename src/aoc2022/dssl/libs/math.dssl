@@ -1,0 +1,18 @@
+/abs {
+    dup 0 < { neg } if
+} def
+/max {
+    /a exch def
+    dup a < {
+        pop a
+    } if
+} def
+/min {
+    /a exch def
+    dup a > {
+        pop a
+    } if
+} def
+/sign {
+    /dup 0 == not { 0 < { -1 } { 1 } ifelse } if
+} def

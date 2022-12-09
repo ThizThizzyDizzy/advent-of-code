@@ -1,0 +1,50 @@
+/contains {
+    /chr exch def
+    /str exch def
+    /result false def
+    str tuple {
+        chr == result not & {
+            /result true =
+        } if
+    } foreach
+    result
+} def
+/indexof {
+    /chr exch def
+    /str exch def
+    /result -1 def
+    /i 0 def
+    str tuple {
+        chr == result -1 == & {
+            /result i =
+        } if
+        /i ++
+    } foreach
+    result
+} def
+/split {
+    /sep exch def
+    /str exch def
+    /s "" def
+    [ str tuple {
+        /chr exch def
+        chr sep == {
+            s /s "" =
+        } {
+            /s s chr ~ =
+        } ifelse
+    } foreach s ] tuple
+} def
+/substr {
+    /begin exch def
+    /str exch def
+    /s "" def
+    str tuple {
+        begin 0 > {
+            pop
+            /begin --
+        } {
+            /s exch ~=
+        } ifelse
+    } foreach s
+} def

@@ -1,0 +1,8 @@
+/spush {
+    /elem exch def
+    [ exch unpack elem ] tuple
+} def
+/spop {
+    [ exch unpack /elem exch def ] tuple
+    elem
+} def
