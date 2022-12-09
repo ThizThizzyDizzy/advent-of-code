@@ -36,20 +36,7 @@ public abstract class Day{
         File f = new File("src/aoc2022/dssl/base/"+name+".dssl");
         if(!f.exists()){
             try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)))){
-                writer.write("/input "+dsslFormat(input)+" def\n"
-                        + "/split {\n" +
-"    /sep exch def\n" +
-"    /str exch def\n" +
-"    /s \"\" def\n" +
-"    [ str tuple {\n" +
-"        /chr exch def\n" +
-"        chr sep == {\n" +
-"            s /s \"\" =\n" +
-"        } {\n" +
-"            /s s chr ~ =\n" +
-"        } ifelse\n" +
-"    } foreach s ] tuple\n" +
-"} def");
+                writer.write("\"string.dssl\" import\n/input "+dsslFormat(input)+" def");
             }catch(IOException ex){
                 Logger.getLogger(Day.class.getName()).log(Level.SEVERE, null, ex);
             }
