@@ -28,7 +28,6 @@ public class Day10 extends Day{
         if(cycleCounter%40==0)output+="\n";
         if(cycleCounter%40==20){
             out+=x*cycleCounter;
-            System.out.println(x+" "+cycleCounter+" "+x*cycleCounter);
         }
     }
 }
