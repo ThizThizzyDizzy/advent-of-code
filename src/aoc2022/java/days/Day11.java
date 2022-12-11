@@ -50,7 +50,6 @@ public class Day11 extends Day{
             return 0;
         });
         System.out.println(monkeys.get(0).totalInspections*monkeys.get(1).totalInspections);
-            System.exit(0);
     }
     private static class Monkey{
         private ArrayList<Long> items = new ArrayList<>();

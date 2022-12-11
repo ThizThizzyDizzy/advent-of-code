@@ -11,22 +11,31 @@
     } foreach
 ] tuple ] tuple =
 /monkeys [ ] list def
-input {
-    /monkey [ ] dict def
-    /m exch def
-    /items [ ] list def
-    "" m 1 get 18 substr exec ',' split exec { ~ } foreach ' ' split exec { int items exch add pop } foreach
-    monkey "items" items put pop
-    m 2 get '+' contains exec { monkey "op" 0 put pop } if
-    m 2 get '*' contains exec { monkey "op" 1 put pop } if
-    m 2 get tuple size 28 == { monkey "op" 2 put pop } if
-    monkey "op" get 2 < { monkey "param" m 2 get 25 substr exec int put pop } if
-    monkey "div" m 3 get 21 substr exec int put pop
-    monkey "true" m 4 get 29 substr exec int put pop
-    monkey "false" m 5 get 30 substr exec int put pop
-    monkey "inspect" 0 put pop
-    monkeys monkey add pop
-} foreach
+/divs 1 def
+/reset {
+    /divs 1 =
+    /monkeys [ ] list =
+    input {
+        /monkey [ ] dict def
+        /m exch def
+        /items [ ] list def
+        "" m 1 get 18 substr exec ',' split exec { ~ } foreach ' ' split exec { int items exch add pop } foreach
+        monkey "items" items put pop
+        m 2 get '+' contains exec { monkey "op" 0 put pop } if
+        m 2 get '*' contains exec { monkey "op" 1 put pop } if
+        m 2 get tuple size 28 == { monkey "op" 2 put pop } if
+        monkey "op" get 2 < { monkey "param" m 2 get 25 substr exec int put pop } if
+        monkey "div" m 3 get 21 substr exec int put pop
+        monkey "true" m 4 get 29 substr exec int put pop
+        monkey "false" m 5 get 30 substr exec int put pop
+        monkey "inspect" 0 put pop
+        monkeys monkey add pop
+    } foreach
+    monkeys {
+        "div" get /divs exch *=
+    } foreach
+} def
+/part2 false def
 /turn {
     /monkey exch def
     /div monkey "div" get def
@@ -40,7 +49,8 @@ input {
         op 0 == { /i param += } if
         op 1 == { /i param *= } if
         op 2 == { /i i *= } if
-        /i 3 //=
+        part2 false == { /i 3 //= } if
+        /i divs %=
         i div % 0 == {
             monkeys tm get "items" get i add pop
         } {
@@ -49,22 +59,34 @@ input {
     } foreach
     monkey "items" [ ] list put pop
 } def
+reset exec
 [ 20 ] range {
     pop monkeys {
         turn exec
     } foreach
 } foreach
-/top1 0 def
-/top2 0 def
-monkeys {
-    /inspect exch "inspect" get def
-    inspect top1 > {
-        /top2 top1 =
-        /top1 inspect =
-    } {
-        inspect top2 > {
-            /top2 inspect =
-        } if
-    } ifelse
+/finish {
+    /top1 0 def
+    /top2 0 def
+    monkeys {
+        /inspect exch "inspect" get def
+        inspect top1 > {
+            /top2 top1 =
+            /top1 inspect =
+        } {
+            inspect top2 > {
+                /top2 inspect =
+            } if
+        } ifelse
+    } foreach
+    top1 top2 * println
+} def
+finish exec
+reset exec
+/part2 true =
+[ 10000 ] range {
+    pop monkeys {
+        turn exec
+    } foreach
 } foreach
-top1 top2 * println
+finish exec
