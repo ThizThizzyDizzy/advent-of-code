@@ -1,0 +1,70 @@
+"string.dssl" import
+/input "Monkey 0:\n  Starting items: 53, 89, 62, 57, 74, 51, 83, 97\n  Operation: new = old * 3\n  Test: divisible by 13\n    If true: throw to monkey 1\n    If false: throw to monkey 5\n\nMonkey 1:\n  Starting items: 85, 94, 97, 92, 56\n  Operation: new = old + 2\n  Test: divisible by 19\n    If true: throw to monkey 5\n    If false: throw to monkey 2\n\nMonkey 2:\n  Starting items: 86, 82, 82\n  Operation: new = old + 1\n  Test: divisible by 11\n    If true: throw to monkey 3\n    If false: throw to monkey 4\n\nMonkey 3:\n  Starting items: 94, 68\n  Operation: new = old + 5\n  Test: divisible by 17\n    If true: throw to monkey 7\n    If false: throw to monkey 6\n\nMonkey 4:\n  Starting items: 83, 62, 74, 58, 96, 68, 85\n  Operation: new = old + 4\n  Test: divisible by 3\n    If true: throw to monkey 3\n    If false: throw to monkey 6\n\nMonkey 5:\n  Starting items: 50, 68, 95, 82\n  Operation: new = old + 8\n  Test: divisible by 7\n    If true: throw to monkey 2\n    If false: throw to monkey 4\n\nMonkey 6:\n  Starting items: 75\n  Operation: new = old * 7\n  Test: divisible by 5\n    If true: throw to monkey 7\n    If false: throw to monkey 0\n\nMonkey 7:\n  Starting items: 92, 52, 85, 89, 68, 82\n  Operation: new = old * old\n  Test: divisible by 2\n    If true: throw to monkey 0\n    If false: throw to monkey 1" def
+/input [ [
+    input '\n' split exec {
+        /s exch def
+        s "" == { 
+        ] tuple [
+        } {
+            s
+        } ifelse
+    } foreach
+] tuple ] tuple =
+/monkeys [ ] list def
+input {
+    /monkey [ ] dict def
+    /m exch def
+    /items [ ] list def
+    "" m 1 get 18 substr exec ',' split exec { ~ } foreach ' ' split exec { int items exch add pop } foreach
+    monkey "items" items put pop
+    m 2 get '+' contains exec { monkey "op" 0 put pop } if
+    m 2 get '*' contains exec { monkey "op" 1 put pop } if
+    m 2 get tuple size 28 == { monkey "op" 2 put pop } if
+    monkey "op" get 2 < { monkey "param" m 2 get 25 substr exec int put pop } if
+    monkey "div" m 3 get 21 substr exec int put pop
+    monkey "true" m 4 get 29 substr exec int put pop
+    monkey "false" m 5 get 30 substr exec int put pop
+    monkey "inspect" 0 put pop
+    monkeys monkey add pop
+} foreach
+/turn {
+    /monkey exch def
+    /div monkey "div" get def
+    /op monkey "op" get def
+    /param monkey "param" get def
+    /tm monkey "true" get def
+    /fm monkey "false" get def
+    monkey "items" get {
+        /i exch def
+        monkey "inspect" monkey "inspect" get 1 + put pop
+        op 0 == { /i param += } if
+        op 1 == { /i param *= } if
+        op 2 == { /i i *= } if
+        /i 3 //=
+        i div % 0 == {
+            monkeys tm get "items" get i add pop
+        } {
+            monkeys fm get "items" get i add pop
+        } ifelse
+    } foreach
+    monkey "items" [ ] list put pop
+} def
+[ 20 ] range {
+    pop monkeys {
+        turn exec
+    } foreach
+} foreach
+/top1 0 def
+/top2 0 def
+monkeys {
+    /inspect exch "inspect" get def
+    inspect top1 > {
+        /top2 top1 =
+        /top1 inspect =
+    } {
+        inspect top2 > {
+            /top2 inspect =
+        } if
+    } ifelse
+} foreach
+top1 top2 * println

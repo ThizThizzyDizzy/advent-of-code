@@ -43,9 +43,6 @@ public class Day11 extends Day{
             for(Monkey monkey : monkeys){
                 monkey.takeTurn();
             }
-            if(i%1000==0||i==1||i==20){
-//                for(Monkey monkey : monkeys)System.out.println(i+" "+monkey.totalInspections);
-            }
         }
         Collections.sort(monkeys, (o1, o2) -> {
             if(o2.totalInspections>o1.totalInspections)return 1;
@@ -53,6 +50,7 @@ public class Day11 extends Day{
             return 0;
         });
         System.out.println(monkeys.get(0).totalInspections*monkeys.get(1).totalInspections);
+            System.exit(0);
     }
     private static class Monkey{
         private ArrayList<Long> items = new ArrayList<>();
