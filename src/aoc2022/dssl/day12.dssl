@@ -65,18 +65,6 @@
     } loop
     path
 } def
-/ithas {
-    /elem exch def
-    /lst exch def
-    /val false def
-    lst {
-        /le exch def
-        le "x" get elem "x" get == le "y" get elem "y" get == & {
-            /val true =
-        } if
-    } foreach
-    val
-} def
 /path {
     /sy exch def
     /sx exch def
@@ -86,18 +74,22 @@
     start "f" start "h" get put pop
     open start add pop
     {
-        open size 0 == { break } if
+        open size 0 == { null break } if
         /node null def
         open {
             /n exch def
             node null == {
                 /node n =
             } if
-            n "f" get node "f" get < {
-                /node n =
+            node null == {
+                n "f" get node "f" get < {
+                    /node n =
+                } if
             } if
-            n "f" get node "f" get == n "h" get node "h" get < & {
-                /node n =
+            node null == {
+                n "f" get node "f" get == n "h" get node "h" get < & {
+                    /node n =
+                } if
             } if
         } foreach
         open node rem pop
@@ -114,11 +106,27 @@
                         neighbor "g" g put pop
                         neighbor "f" g neighbor "h" get + put pop
                         neighbor "parent" node put pop
-                        open neighbor ithas exec not { open neighbor add pop } if
+                        open neighbor has not { open neighbor add pop } if
                     } if
                 } if
             } if
         } foreach
     } loop
 } def
-startx starty path exec size println
+/dist startx starty path exec size def
+dist println
+[ heightmap size ] range {
+    /x exch def
+    [ heightmap 0 get size ] range {
+        /y exch def
+        heightmap x get y get 0 == {
+            /nodes [ ] dict =
+            x y path exec
+            x print " " print y print " " print
+            dup null == { pop } {
+                /dist exch size dist min exec =
+            } ifelse
+        } if
+    } foreach
+} foreach
+dist println
