@@ -31,6 +31,18 @@ public class Day12 extends Day{
             }
         }
         System.out.println(path(startx, starty, endx, endy).size());
+        int dist = Integer.MAX_VALUE;
+        for(int x = 0; x<heightmap.length; x++){
+            for(int y = 0; y<heightmap[0].length; y++){
+                if(heightmap[x][y]==0){
+                    nodes.clear();
+                    var path = path(x, y, endx, endy);
+                    if(path==null)continue;
+                    dist = Math.min(dist, path.size());
+                }
+            }
+        }
+        System.out.println(dist);
     }
     private ArrayList<Node> path(int startx, int starty, int endx, int endy){
         ArrayList<Node> open = new ArrayList<>();
