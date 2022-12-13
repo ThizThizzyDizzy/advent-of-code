@@ -3,6 +3,7 @@ import aoc2022.java.Day;
 import aoc2022.java.Stack;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 public class Day13 extends Day{
     public Day13(){
         super(13);
@@ -16,6 +17,21 @@ public class Day13 extends Day{
             String[] packs = s.split("\n");
             if(compare(parse(packs[0]), parse(packs[1]))>=0){
                 out+=i;
+            }
+        }
+        System.out.println(out);
+        ArrayList<String> packets = new ArrayList<>(Arrays.asList(input.replace("\n\n", "\n").split("\n")));
+        packets.add("[[2]]");
+        packets.add("[[6]]");
+        Collections.sort(packets, (o1, o2) -> {
+            return -compare(parse(o1), parse(o2));
+        });
+        out = 1;
+        i = 0;
+        for(String packet : packets){
+            i++;
+            if("[[2]]".equals(packet)||"[[6]]".equals(packet)){
+                out*=i;
             }
         }
         System.out.println(out);
