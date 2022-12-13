@@ -13,33 +13,43 @@
     } foreach
 ] tuple ] tuple def
 /nums "0123456789" def
+/parsemap [ ] dict def
 /parse {
-    /stack [ ] list def
-    /num "" def
-    /out null def
-    tuple {
-        dup nums exch contains exec {
-            /num exch ~=
-        } {
-            num "" == not {
-                stack stack size 1 - get [ num int ] list add pop
-                /num "" =
-            } if
-            dup '[' == {
-                stack [ ] list add pop
-            } if
-            dup ']' == {
-                /v stack spop exec exch /stack exch list = def
-                stack size 0 == {
-                    /out v =
-                } {
-                    stack stack size 1 - get v add pop
-                } ifelse
-            } if
-            pop
-        } ifelse
-    } foreach
-    out
+    /key exch def
+    parsemap key haskey {
+        parsemap key get clone exch pop
+    } {
+        key
+        /stack [ ] list def
+        /num "" def
+        /out null def
+        tuple {
+            /ch exch def
+            ch
+            ch '[' == not ch ']' == not ch ',' == not & & {
+                /num exch ~=
+            } {
+                num "" == not {
+                    stack stack size 1 - get [ num int ] list add pop
+                    /num "" =
+                } if
+                dup '[' == {
+                    stack [ ] list add pop
+                } if
+                dup ']' == {
+                    /v stack spop exec exch /stack exch list = def
+                    stack size 0 == {
+                        /out v =
+                    } {
+                        stack stack size 1 - get v add pop
+                    } ifelse
+                } if
+                pop
+            } ifelse
+        } foreach
+        parsemap key out clone exch pop put pop
+        out
+    } ifelse
 } def
 /compare {
     /o2 exch def
@@ -60,8 +70,8 @@
         siz 0 > {
             [ siz ] range {
                 /i exch def
-                /c o1 i get o2 i get compare exec def
                 val 0 == {
+                    /c o1 i get o2 i get compare exec def
                     c 0 == not {
                         /val c =
                     } if
@@ -81,6 +91,65 @@ inp1 {
     /packs exch list def
     packs 0 get parse exec packs 1 get parse exec compare exec 0 >= {
         /out i +=
+    } if
+} foreach
+out println
+/sort {
+    /func exch def
+    /lst exch def
+    /out [ ] list def
+    /compares [ ] dict def
+    [ lst size ] range {
+        lst spop exec
+        /elem exch def
+        /lst exch list =
+        //now the sort
+        /pre [ ] list def //everything before this
+        /post [ ] list def //everything after this
+        out {
+            /el exch def
+            /key el "~" elem ~ ~ def
+            /keyflip elem "~" el ~ ~ def
+            /val null def
+            /*compares key haskey {
+                /val compares key get =
+            } {
+                compares keyflip haskey {
+                    /val compares key get neg =
+                } {*/
+                    /val el elem func exec =
+                    /*compares key val put pop
+                    compares keyflip val neg put pop
+                } ifelse
+            } ifelse*/
+            val 0 <= {
+                pre el add pop
+            } if
+            val 0 > {
+                post el add pop
+            } if
+        } foreach
+        /out [ pre unpack elem post unpack ] list =
+    } foreach
+    out
+} def
+/packets [ inp1 { unpack } foreach ] list def
+packets "[[2]]" add pop
+packets "[[6]]" add pop
+/i 0 =
+/out 1 =
+packets {
+    /o2 exch def
+    /o1 exch def
+    o1 parse exec o2 parse exec compare exec neg
+} sort exec /packets exch =
+/i 0 =
+/out 1 =
+packets {
+    /packet exch def
+    /i ++
+    "[[2]]" packet == "[[6]]" packet == | {
+        /out i *=
     } if
 } foreach
 out println
