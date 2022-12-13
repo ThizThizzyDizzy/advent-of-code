@@ -16,6 +16,7 @@ public class Day13 extends Day{
             i++;
             String[] packs = s.split("\n");
             if(compare(parse(packs[0]), parse(packs[1]))>=0){
+                System.out.println(i);
                 out+=i;
             }
         }
