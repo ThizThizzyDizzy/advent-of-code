@@ -19,14 +19,14 @@
             /dy 0 def
             dir 'U' == { /dy -1 = } if
             dir 'D' == { /dy 1 = } if
-            rx 0 rx 0 get dx + put pop
-            ry 0 ry 0 get dy + put pop
+            rx 0 rx[0] dx + put pop
+            ry 0 ry[0] dy + put pop
             [ 1 len ] range {
                 /i exch def
                 /hx rx i 1 - get def
                 /hy ry i 1 - get def
-                /tx rx i get def
-                /ty ry i get def
+                /tx rx[i] def
+                /ty ry[i] def
                 /dst hx tx - abs exec hy ty - abs exec max exec def
                 dst 1 > {
                     /Y hx tx == def

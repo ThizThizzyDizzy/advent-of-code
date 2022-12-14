@@ -34,12 +34,12 @@
         x xmin < x xmax > y ymax > | | {
             ' '
         } {
-            /xmap map x get def
+            /xmap map[x] def
             xmap null == {
                 /xmap [ ] dict =
                 map x xmap put pop
             } if
-            /val xmap y get def
+            /val xmap[y] def
             val null == {
                 /val '.' =
                 xmap y val put pop
@@ -52,7 +52,7 @@
     /val exch def
     /y exch def
     /x exch def
-    /xmap map x get def
+    /xmap map[x] def
     xmap null == {
         /xmap [ ] dict =
         map x xmap put pop
@@ -111,14 +111,14 @@ input '\n' split exec {
     /last null def
     [ points size ] range {
         /i exch def
-        /pt points i get ',' split exec def
-        /point [ pt 0 get int pt 1 get int ] tuple def
-        point 0 get xmin < { /xmin point 0 get = } if
-        point 0 get xmax > { /xmax point 0 get = } if
-        point 1 get ymin < { /ymin point 1 get = } if
-        point 1 get ymax > { /ymax point 1 get = } if
+        /pt points[i] ',' split exec def
+        /point [ pt[0] int pt[1] int ] tuple def
+        point[0] xmin < { /xmin point[0] = } if
+        point[0] xmax > { /xmax point[0] = } if
+        point[1] ymin < { /ymin point[1] = } if
+        point[1] ymax > { /ymax point[1] = } if
         i 0 > {
-            last 0 get last 1 get point 0 get point 1 get { '#' sett exec } line exec
+            last[0] last[1] point[0] point[1] { '#' sett exec } line exec
         } if
         /last point =
     } foreach

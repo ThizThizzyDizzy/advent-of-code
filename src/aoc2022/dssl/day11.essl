@@ -21,13 +21,13 @@
         /items [ ] list def
         "" m 1 get 18 substr exec ',' split exec { ~ } foreach ' ' split exec { int items exch add pop } foreach
         monkey "items" items put pop
-        m 2 get '+' contains exec { monkey "op" 0 put pop } if
-        m 2 get '*' contains exec { monkey "op" 1 put pop } if
-        m 2 get tuple size 28 == { monkey "op" 2 put pop } if
-        monkey "op" get 2 < { monkey "param" m 2 get 25 substr exec int put pop } if
-        monkey "div" m 3 get 21 substr exec int put pop
-        monkey "true" m 4 get 29 substr exec int put pop
-        monkey "false" m 5 get 30 substr exec int put pop
+        m[2] '+' contains exec { monkey "op" 0 put pop } if
+        m[2] '*' contains exec { monkey "op" 1 put pop } if
+        m[2] tuple size 28 == { monkey "op" 2 put pop } if
+        monkey.op 2 < { monkey "param" m[2] 25 substr exec int put pop } if
+        monkey "div" m[3] 21 substr exec int put pop
+        monkey "true" m[4] 29 substr exec int put pop
+        monkey "false" m[5] 30 substr exec int put pop
         monkey "inspect" 0 put pop
         monkeys monkey add pop
     } foreach
@@ -38,23 +38,23 @@
 /part2 false def
 /turn {
     /monkey exch def
-    /div monkey "div" get def
-    /op monkey "op" get def
-    /param monkey "param" get def
-    /tm monkey "true" get def
-    /fm monkey "false" get def
-    monkey "items" get {
+    /div monkey.div def
+    /op monkey.op def
+    /param monkey.param def
+    /tm monkey.true def
+    /fm monkey.false def
+    monkey.items {
         /i exch def
-        monkey "inspect" monkey "inspect" get 1 + put pop
+        monkey "inspect" monkey.inspect 1 + put pop
         op 0 == { /i param += } if
         op 1 == { /i param *= } if
         op 2 == { /i i *= } if
         part2 false == { /i 3 //= } if
         /i divs %=
         i div % 0 == {
-            monkeys tm get "items" get i add pop
+            monkeys[tm].items i add pop
         } {
-            monkeys fm get "items" get i add pop
+            monkeys[fm].items i add pop
         } ifelse
     } foreach
     monkey "items" [ ] list put pop

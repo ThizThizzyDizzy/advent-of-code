@@ -17,7 +17,7 @@
 /parse {
     /key exch def
     parsemap key haskey {
-        parsemap key get clone exch pop
+        parsemap[key] clone exch pop
     } {
         key
         /stack [ ] list def
@@ -71,7 +71,7 @@
             [ siz ] range {
                 /i exch def
                 val 0 == {
-                    /c o1 i get o2 i get compare exec def
+                    /c o1[i] o2[i] compare exec def
                     c 0 == not {
                         /val c =
                     } if
@@ -89,7 +89,7 @@
 inp1 {
     /i ++
     /packs exch list def
-    packs 0 get parse exec packs 1 get parse exec compare exec 0 >= {
+    packs[0] parse exec packs[1] parse exec compare exec 0 >= {
         /out i +=
     } if
 } foreach

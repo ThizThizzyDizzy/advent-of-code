@@ -32,7 +32,7 @@ input '\n' split exec
             dirs pat haskey not {
                 dirs pat [ ] tuple put pop
             } if
-            dirs pat dirs pat get nam spush exec put pop
+            dirs pat dirs[pat] nam spush exec put pop
         } {
             ' ' split exec unpack
             /nam exch def
@@ -41,7 +41,7 @@ input '\n' split exec
             files pat haskey not {
                 files pat [ ] tuple put pop
             } if
-            files pat files pat get nam spush exec put pop
+            files pat files[pat] nam spush exec put pop
             filesizes pat nam ~ siz put pop
         } ifelse
     } ifelse
@@ -49,16 +49,16 @@ input '\n' split exec
 //now calc sizes for base dirs
 dirs keys {
     /key exch def
-    dirs key get {
+    dirs[key] {
         /nam exch def
         /dir key nam ~ "_" ~ def
         files keys {
             dir == {
                 /siz 0 def
-                files dir get {
+                files[dir] {
                     /n exch def
                     /f dir n ~ def
-                    /siz filesizes f get +=
+                    /siz filesizes[f] +=
                 } foreach
                 filesizes dir siz put pop
                 dirs dir haskey not { //if this only has files, set dir size
@@ -77,13 +77,13 @@ dirs keys {
         dirsizes dir haskey not { //if it hasn't been sized yet
             /siz 0 def
             filesizes dir haskey { //add size of all contained files
-                /siz filesizes dir get +=
+                /siz filesizes[dir] +=
             } if
-            dirs dir get { //get all subdirectories
+            dirs[dir] { //get all subdirectories
                 /nam exch def
                 /d dir nam ~ "_" ~ def //subdirectory
                 dirsizes d haskey { //if subdirectory has size, add it to this one
-                    /siz dirsizes d get +=
+                    /siz dirsizes[d] +=
                 } { //if subdirectory is not sized, do not size this one
                     /siz -999999999 =
                 } ifelse

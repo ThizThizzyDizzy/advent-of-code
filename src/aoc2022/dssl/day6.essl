@@ -6,7 +6,7 @@
     /i exch def
     part1 not {
         [
-            input i get
+            input[i]
             input i 1 - get
             input i 2 - get
             input i 3 - get

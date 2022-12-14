@@ -15,9 +15,9 @@
 /hm "abcdefghijklmnopqrstuvwxyz" def
 [ input size ] range {
     /y exch def
-    [ input y get tuple size ] range {
+    [ input[y] tuple size ] range {
         /x exch def
-        /h input y get tuple x get def
+        /h input[y] tuple x get def
         h 'E' == {
             /endx x =
             /endy y =
@@ -29,7 +29,7 @@
             /h 'a' =
         } if
         /h hm h indexof exec =
-        heightmap x get y h put pop
+        heightmap[x] y h put pop
     } foreach
 } foreach
 /nodes [ ] dict def
@@ -37,19 +37,19 @@
     /y exch def
     /x exch def
     /node null def
-    x 0 < y 0 < | x heightmap size >= y heightmap 0 get size >= | | not {
+    x 0 < y 0 < | x heightmap size >= y heightmap[0] size >= | | not {
         /node nodes x "_" ~ y ~ get =
         node null == {
             /node [ ] dict =
             node "x" x put pop
             node "y" y put pop
-            node "z" heightmap x get y get put pop
+            node "z" heightmap[x][y] put pop
             node "h" x endx - abs exec y endy - abs exec + put pop
             node "g" 999999999 put pop
             node "f" 999999999 put pop
         } if
     } if
-    node null == not { nodes node "x" get "_" ~ node "y" get ~ node put pop } if
+    node null == not { nodes node.x "_" ~ node.y ~ node put pop } if
     node
 } def
 /dirs [ [ 1 0 ] tuple [ 0 1 ] tuple [ -1 0 ] tuple [ 0 -1 ] tuple ] tuple def
@@ -57,7 +57,7 @@
     /node exch def
     /path [ ] list def
     {
-        /parent node "parent" get def
+        /parent node.parent def
         parent null == { break } {
             path node add pop
             /node parent =
@@ -71,7 +71,7 @@
     /open [ ] list def
     /start sx sy getNode exec def
     start "g" 0 put pop
-    start "f" start "h" get put pop
+    start "f" start.h put pop
     open start add pop
     {
         open size 0 == { null break } if
@@ -82,29 +82,29 @@
                 /node n =
             } if
             node null == {
-                n "f" get node "f" get < {
+                n.f node.f < {
                     /node n =
                 } if
             } if
             node null == {
-                n "f" get node "f" get == n "h" get node "h" get < & {
+                n.f node.f == n.h node.h < & {
                     /node n =
                 } if
             } if
         } foreach
         open node rem pop
-        node "x" get endx == node "y" get endy == & {
+        node.x endx == node.y endy == & {
             node retrace exec break
         } if
         dirs {
             /d exch def
-            /neighbor node "x" get d 0 get + node "y" get d 1 get + getNode exec def
+            /neighbor node.x d[0] + node.y d[1] + getNode exec def
             neighbor null == not {
-                neighbor "z" get node "z" get 1 + <= {
-                    /g node "g" get 1 + def
-                    g neighbor "g" get < {
+                neighbor.z node.z 1 + <= {
+                    /g node.g 1 + def
+                    g neighbor.g < {
                         neighbor "g" g put pop
-                        neighbor "f" g neighbor "h" get + put pop
+                        neighbor "f" g neighbor.h + put pop
                         neighbor "parent" node put pop
                         open neighbor has not { open neighbor add pop } if
                     } if
@@ -117,9 +117,9 @@
 dist println
 [ heightmap size ] range {
     /x exch def
-    [ heightmap 0 get size ] range {
+    [ heightmap[0] size ] range {
         /y exch def
-        heightmap x get y get 0 == {
+        heightmap[x][y] 0 == {
             /nodes [ ] dict =
             x y path exec
             x print " " print y print " " print
