@@ -6,6 +6,7 @@
 /ymin xmin def
 /xmax -999999999 def
 /ymax xmax def
+/floor -1 def
 /line {
     /func exch def
     /y2 exch def
@@ -25,20 +26,26 @@
 /gett {
     /y exch def
     /x exch def
-    x xmin < x xmax > y ymax > | | {
-        ' '
-    } {
-        /xmap map x get def
-        xmap null == {
-            /xmap [ ] dict =
-            map x xmap put pop
+    y floor == { '#' } {
+        floor 0 > {
+            x xmin < { /xmin x = } if
+            x xmax > { /xmax x = } if
         } if
-        /val xmap y get def
-        val null == {
-            /val '.' =
-            xmap y val put pop
-        } if
-        val
+        x xmin < x xmax > y ymax > | | {
+            ' '
+        } {
+            /xmap map x get def
+            xmap null == {
+                /xmap [ ] dict =
+                map x xmap put pop
+            } if
+            /val xmap y get def
+            val null == {
+                /val '.' =
+                xmap y val put pop
+            } if
+            val
+        } ifelse
     } ifelse
 } def
 /sett {
@@ -59,15 +66,18 @@
     {
         /rep false def
         /y x y fall exec =
-        x y 1 + gett exec ' ' ==
-        x 1 - y 1 + gett exec ' ' ==
-        x 1 + y 1 + gett exec ' ' == | | { /halt true = } if
-        x 1 - y 1 + gett exec '.' == {
+        /d x y 1 + gett exec def
+        /dl x 1 - y 1 + gett exec def
+        /dr x 1 + y 1 + gett exec def
+        d ' ' ==
+        dl ' ' ==
+        dr ' ' == | | { /halt true = } if
+        dl '.' == {
             /x --
             /y ++
             /rep true =
         } {
-            x 1 + y 1 + gett exec '.' == {
+            dr '.' == {
                 /x ++
                 /y ++
                 /rep true =
@@ -89,7 +99,7 @@
     /y exch def
     /x exch def
     x y 1 + gett exec '.' == {
-        /y x y 1 + fall exec = y
+        x y 1 + fall exec
     } {
         y
     } ifelse
@@ -128,6 +138,12 @@ input '\n' split exec {
     } foreach
 } def
 /sand 0 def
+{
+    500 0 drop exec { /sand ++ } { break } ifelse
+} loop
+sand println
+/floor ymax 2 + =
+/ymax 2 +=
 {
     500 0 drop exec { /sand ++ } { break } ifelse
 } loop
