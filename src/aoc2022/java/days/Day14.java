@@ -8,6 +8,7 @@ public class Day14 extends Day{
     }
     HashMap<Integer, HashMap<Integer, Character>> map = new HashMap<>();
     int xmin = Integer.MAX_VALUE, xmax = Integer.MIN_VALUE, ymin = Integer.MAX_VALUE, ymax = Integer.MIN_VALUE;
+    int floor = -1;
     @Override
     public void run(){
         for(String s : input.split("\n")){
@@ -28,10 +29,15 @@ public class Day14 extends Day{
                 last = point;
             }
         }
-//        printMap();
+        printMap();
         int sand = 0;
         while(dropSand(500, 0))sand++;
-//        printMap();
+        printMap();
+        System.out.println(sand);
+        floor = ymax+2;
+        ymax+=2;
+        while(dropSand(500, 0))sand++;
+        printMap();
         System.out.println(sand);
     }
     public void forLine(int x1, int y1, int x2, int y2, BiConsumer<Integer, Integer> func){
@@ -45,6 +51,11 @@ public class Day14 extends Day{
         }
     }
     public char get(int x, int y){
+        if(y==floor)return '#';
+        if(floor>0){
+            if(x<xmin)xmin = x;
+            if(x>xmax)xmax = x;
+        }
         if(x<xmin||x>xmax||y>ymax)return ' ';
         return map.getOrDefault(x, new HashMap<>()).getOrDefault(y, '.');
     }
