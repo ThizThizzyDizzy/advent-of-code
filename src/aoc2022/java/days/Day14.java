@@ -29,15 +29,12 @@ public class Day14 extends Day{
                 last = point;
             }
         }
-        printMap();
         int sand = 0;
         while(dropSand(500, 0))sand++;
-        printMap();
         System.out.println(sand);
         floor = ymax+2;
         ymax+=2;
         while(dropSand(500, 0))sand++;
-        printMap();
         System.out.println(sand);
     }
     public void forLine(int x1, int y1, int x2, int y2, BiConsumer<Integer, Integer> func){
