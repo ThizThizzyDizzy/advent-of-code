@@ -13,7 +13,6 @@ public class Day15 extends Day{
     @Override
     public void run(){
         for(String s : input.split("\n")){
-            //Sensor at x=545406, y=2945484: closest beacon is at x=772918, y=2626448
             String[] str = s.replace(",", "").replace(":", "").split(" ");
             int sx = Integer.parseInt(str[2].substring(2));
             int sy = Integer.parseInt(str[3].substring(2));
@@ -26,6 +25,16 @@ public class Day15 extends Day{
             if(has(x,2000000))i++;
         }
         System.out.println(i);
+        for(int y = 0; y<=4000000; y++){
+            for(int x = 0; x<=4000000; x++){
+                Sensor s = get(x,y);
+                if(s==null){
+                    System.out.println(x*4000000l+y);
+                }else{
+                    x = s.maxX(y);
+                }
+            }
+        }
     }
     public static boolean has(int x, int y){
         if(x<xmin||x>xmax||y<ymin||y>ymax)return false;
@@ -38,6 +47,14 @@ public class Day15 extends Day{
             }
         }
         return false;
+    }
+    public static Sensor get(int x, int y){
+        for(Sensor s : sensors){
+            if(taxi(s.x,s.y,x,y)<=s.radius){
+                return s;
+            }
+        }
+        return null;
     }
     private static class Sensor {
         private final int x, y, radius;
@@ -63,6 +80,10 @@ public class Day15 extends Day{
             int evens = (width/2)*(depth/2);
             System.out.println(width+" "+depth);
             return odds+evens;
+        }
+        private int maxX(int y){
+            int width = (radius-Math.abs(this.y-y))*2+1;
+            return x+width/2;
         }
     }
 }
