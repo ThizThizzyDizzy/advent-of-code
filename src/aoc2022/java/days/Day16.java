@@ -1,0 +1,149 @@
+package aoc2022.java.days;
+import aoc2022.java.Day;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+public class Day16 extends Day{
+    public Day16(){
+        super(16);
+    }
+    public static HashMap<String, Valve> valves = new HashMap<>();
+    String current = "AA";
+    @Override
+    public void run(){
+        long time = System.nanoTime();
+        ArrayList<Valve> usefulValves = new ArrayList<>();
+        for(String str : input.split("\n")){
+            String[] s = str.split(" ");
+            Valve valve = new Valve(s[1], Integer.parseInt(s[4].substring(5).replace(";", "")));
+            for(int i = 9; i<s.length; i++){
+                valve.tunnels.add(s[i].replace(",", ""));
+            }
+            if(valve.rate>0)usefulValves.add(valve);
+        }
+        usefulValves.add(valves.get(current));//not actually useful, but needed for the calculations cuz that's where ya start
+        for(Valve valve : usefulValves){
+            for(Valve otherValve : usefulValves){
+                if(valve==otherValve)continue;
+                valve.timeMap.put(otherValve, path(valve, otherValve).size()-1);
+            }
+        }
+        long bestScore = 0;
+        ArrayList<Valve> bestPath = null;
+        while(true){
+            ArrayList<Valve> path = (bestPath==null||rand.nextDouble()<.1f)?randomPath(valves.get(current), usefulValves):tweakPath(bestPath, rand.nextInt(rand.nextInt(bestPath.size()-1)+1));
+            long score = simulate(path);
+            long diff = (System.nanoTime()-time);
+            if(bestPath==null||score>bestScore){
+                bestScore = score;
+                bestPath = path;
+                System.out.println(score+": "+path.toString()+" "+diff/1_000_000+"ms");
+            }
+            if(diff>5_000_000_000l){
+                System.out.println("5 seconds have passed, hope that's good enough");
+                break;
+            }
+        }
+    }
+    private ArrayList<Valve> path(String... strs){
+        ArrayList<Valve> path = new ArrayList<>();
+        for(String s : strs)path.add(valves.get(s));
+        return path;
+    }
+    private ArrayList<Valve> path(Valve valve, Valve otherValve){
+        return path(valve, otherValve, new ArrayList<>());
+    }
+    private ArrayList<Valve> path(Valve valve, Valve otherValve, ArrayList<Valve> visited){
+        if(valve==otherValve){
+            ArrayList<Valve> lst = new ArrayList<>();
+            lst.add(otherValve);
+            return lst;
+        }
+        visited.add(valve);
+        ArrayList<Valve> best = null;
+        for(String s : valve.tunnels){
+            Valve v = valves.get(s);
+            if(visited.contains(v))continue;
+            var path = path(valves.get(s), otherValve, new ArrayList<>(visited));
+            if(path!=null&&(best==null||path.size()<best.size()))best = path;
+        }
+        if(best==null)return null;
+        best.add(valve);
+        return best;
+    }
+    Random rand = new Random();
+    private ArrayList<Valve> randomPath(Valve start, ArrayList<Valve> allofem){
+        ArrayList<Valve> path = new ArrayList<>();
+        path.add(start);
+        while(path.size()<allofem.size()){
+            Valve last = path.get(path.size()-1);
+            ArrayList<Valve> nextPossibilities = new ArrayList<>(allofem);
+            nextPossibilities.removeAll(path);
+            path.add(nextPossibilities.get(rand.nextInt(nextPossibilities.size())));
+        }
+        return path;
+    }
+    @Deprecated //takes too long, too many permutations x.x
+    private ArrayList<ArrayList<Valve>> findAllPaths(Valve start, ArrayList<Valve> visited){
+        visited.add(start);
+        ArrayList<ArrayList<Valve>> paths = new ArrayList<>();
+        for(Valve v : start.timeMap.keySet()){
+            if(visited.contains(v))continue;
+            paths.addAll(findAllPaths(v, new ArrayList<>(visited)));
+        }
+        if(paths.isEmpty()){
+            paths.add(new ArrayList<Valve>());
+            paths.get(0).add(start);
+        }
+        for(var lst : paths)lst.add(start);
+        if(paths.get(0).size()>10)System.out.println(paths.size()+" "+(paths.isEmpty()?"":paths.get(0).size()));
+        return paths;
+    }
+    private long simulate(ArrayList<Valve> path){
+        long score = 0;
+        long releasing = 0;
+        int idx = 0;
+        boolean open = false;//should I open a valve this turn?
+        int travelTime = path.get(0).timeMap.get(path.get(1));
+        for(int i = 0; i<30; i++){
+            score+=releasing;
+            if(travelTime>0){
+                travelTime--;
+                if(travelTime==0){
+                    open = true;
+                    idx++;
+                }
+                continue;
+            }
+            if(open){
+                releasing+=path.get(idx).rate;
+                open = false;
+                if(idx<path.size()-1)travelTime = path.get(idx).timeMap.get(path.get(idx+1));
+                continue;
+            }
+        }
+        return score;
+    }
+    private ArrayList<Valve> tweakPath(ArrayList<Valve> p, int tweaks){
+        var path = new ArrayList<>(p);
+        for(int i = 0; i<tweaks; i++){
+            path.add(rand.nextInt(path.size()-1)+1, path.remove(rand.nextInt(path.size()-1)+1));
+        }
+        return path;
+    }
+    private static class Valve{
+        private final String name;
+        private final int rate;
+        private ArrayList<String> tunnels = new ArrayList<>();
+        private HashMap<Valve, Integer> timeMap = new HashMap<>();
+        public Valve(String name, int rate){
+            this.name = name;
+            this.rate = rate;
+            valves.put(name, this);
+        }
+        @Override
+        public String toString(){
+            return name;//+" "+rate+" "+tunnels.toString();
+        }
+    }
+}
