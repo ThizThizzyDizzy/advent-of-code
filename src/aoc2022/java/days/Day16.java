@@ -1,6 +1,7 @@
 package aoc2022.java.days;
 import aoc2022.java.Day;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 public class Day16 extends Day{
@@ -39,10 +40,27 @@ public class Day16 extends Day{
                 bestPath = path;
                 System.out.println(score+": "+path.toString()+" "+diff/1_000_000+"ms");
             }
-            if(diff>5_000_000_000l){
-                System.out.println("5 seconds have passed, hope that's good enough");
+            if(diff>1_000_000_000l){
+                System.out.println("a second has passed, hope that's good enough");
                 break;
             }
+        }
+        //part 2
+        bestScore = 0;
+        ArrayList<Valve>[] bestPth = null;
+        while(true){
+            ArrayList<Valve>[] path = (bestPth==null||rand.nextDouble()<.1f)?randomPth(valves.get(current), usefulValves):tweakPath(bestPth, rand.nextInt(10)+1);
+            long score = simulate(path);
+            long diff = (System.nanoTime()-time);
+            if(bestPth==null||score>bestScore){
+                bestScore = score;
+                bestPth = path;
+                System.out.println(score+": "+Arrays.toString(path)+" "+diff/1_000_000+"ms");
+            }
+//            if(diff>10_000_000_000l){
+//                System.out.println("5 seconds have passed, hope that's good enough");
+//                break;
+//            }
         }
     }
     private ArrayList<Valve> path(String... strs){
@@ -82,6 +100,21 @@ public class Day16 extends Day{
             path.add(nextPossibilities.get(rand.nextInt(nextPossibilities.size())));
         }
         return path;
+    }
+    private ArrayList<Valve>[] randomPth(Valve start, ArrayList<Valve> allofem){
+        ArrayList<Valve> path = new ArrayList<>();
+        path.add(start);
+        while(path.size()<allofem.size()){
+            Valve last = path.get(path.size()-1);
+            ArrayList<Valve> nextPossibilities = new ArrayList<>(allofem);
+            nextPossibilities.removeAll(path);
+            path.add(nextPossibilities.get(rand.nextInt(nextPossibilities.size())));
+        }
+        int split = rand.nextInt(path.size()-3)+2;
+        ArrayList<Valve> otherPath = new ArrayList<>();
+        otherPath.add(path.get(0));
+        for(int i = split; i<path.size(); i++)otherPath.add(path.remove(split));
+        return new ArrayList[]{path, otherPath};
     }
     @Deprecated //takes too long, too many permutations x.x
     private ArrayList<ArrayList<Valve>> findAllPaths(Valve start, ArrayList<Valve> visited){
@@ -124,12 +157,75 @@ public class Day16 extends Day{
         }
         return score;
     }
+    private long simulate(ArrayList<Valve>[] paths){
+        ArrayList<Valve> p1 = paths[0];
+        ArrayList<Valve> p2 = paths[1];
+        long score = 0;
+        long releasing = 0;
+        int i1 = 0;
+        int i2 = 0;
+        boolean o1 = false;//should I open a valve this turn?
+        boolean o2 = false;//should the elephant open a valve this turn?
+        int t1 = p1.get(0).timeMap.get(p1.get(1));
+        int t2 = p2.get(0).timeMap.get(p2.get(1));
+        for(int i = 0; i<26; i++){
+            score+=releasing;
+            if(t1>0){
+                t1--;
+                if(t1==0){
+                    o1 = true;
+                    i1++;
+                }
+            }else if(o1){
+                releasing+=p1.get(i1).rate;
+                o1 = false;
+                if(i1<p1.size()-1)t1 = p1.get(i1).timeMap.get(p1.get(i1+1));
+            }
+            if(t2>0){
+                t2--;
+                if(t2==0){
+                    o2 = true;
+                    i2++;
+                }
+            }else if(o2){
+                releasing+=p2.get(i2).rate;
+                o2 = false;
+                if(i2<p2.size()-1)t2 = p2.get(i2).timeMap.get(p2.get(i2+1));
+            }
+        }
+        return score;
+    }
     private ArrayList<Valve> tweakPath(ArrayList<Valve> p, int tweaks){
         var path = new ArrayList<>(p);
         for(int i = 0; i<tweaks; i++){
             path.add(rand.nextInt(path.size()-1)+1, path.remove(rand.nextInt(path.size()-1)+1));
         }
         return path;
+    }
+    private ArrayList<Valve>[] tweakPath(ArrayList<Valve>[] ps, int tweaks){
+        var p1 = new ArrayList<>(ps[0]);
+        var p2 = new ArrayList<>(ps[1]);
+        for(int i = 0; i<tweaks; i++){
+            switch(rand.nextInt(4)){
+                case 0:
+                    p1 = tweakPath(p1, 1);
+                    break;
+                case 1:
+                    p2 = tweakPath(p2, 1);
+                    break;
+                case 2:
+                    if(p1.size()>2){
+                        p2.add(rand.nextInt(p2.size())+1, p1.remove(rand.nextInt(p1.size()-1)+1));
+                    }
+                    break;
+                case 3:
+                    if(p2.size()>2){
+                        p1.add(rand.nextInt(p1.size())+1, p2.remove(rand.nextInt(p2.size()-1)+1));
+                    }
+                    break;
+            }
+        }
+        return new ArrayList[]{p1,p2};
     }
     private static class Valve{
         private final String name;
