@@ -40,8 +40,8 @@ public class Day16 extends Day{
                 bestPath = path;
                 System.out.println(score+": "+path.toString()+" "+diff/1_000_000+"ms");
             }
-            if(diff>1_000_000_000l){
-                System.out.println("a second has passed, hope that's good enough");
+            if(diff>2_000_000_000l){
+                System.out.println("two seconds have passed, hope that's good enough");
                 break;
             }
         }
@@ -57,10 +57,10 @@ public class Day16 extends Day{
                 bestPth = path;
                 System.out.println(score+": "+Arrays.toString(path)+" "+diff/1_000_000+"ms");
             }
-//            if(diff>10_000_000_000l){
-//                System.out.println("5 seconds have passed, hope that's good enough");
-//                break;
-//            }
+            if(diff>5_000_000_000l){
+                System.out.println("another three have passed, hope that's good enough");
+                break;
+            }
         }
     }
     private ArrayList<Valve> path(String... strs){
