@@ -1,7 +1,6 @@
 package aoc2022.java.days;
 import aoc2022.java.Day;
 import java.util.ArrayList;
-import java.util.HashSet;
 public class Day17 extends Day{
     public Day17(){
         super(17);
