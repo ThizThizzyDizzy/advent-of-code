@@ -16,28 +16,30 @@ public class Day19 extends Day{
         }
         int total = 0;
         for(int i = 0; i<blueprints.size(); i++){
-            int best = -1;
-            for(int j = 0; j<5; j++){
-                best = Math.max(best, findGoodSolution(blueprints.get(i)));
-            }
-            total+=(i+1)*best;
+            total+=(i+1)*findBestSolutionWithMagicAndThreading(blueprints.get(i), 24, 1, 500_000_000l);
+        }
+        System.out.println(total);
+        while(blueprints.size()>3)blueprints.remove(3);
+        total = 1;
+        for(int i = 0; i<blueprints.size(); i++){
+            total*=findBestSolutionWithMagicAndThreading(blueprints.get(i), 32, 5, 500_000_000l);
         }
         System.out.println(total);
     }
-    private int findGoodSolution(Blueprint blueprint){
+    private int findGoodSolution(Blueprint blueprint, int size, long timeout){
         long lastChange = System.nanoTime();
         int best = -1;
         ArrayList<Robot> bestSteps = null;
         while(true){
-            ArrayList<Robot> steps = (rand.nextInt(10)==0||bestSteps==null)?randomValidSolution(blueprint, 24):tweak(bestSteps, rand.nextInt(rand.nextInt(23)+1));
+            ArrayList<Robot> steps = (rand.nextInt(10)==0||bestSteps==null)?randomValidSolution(blueprint, size):tweak(bestSteps, rand.nextInt(rand.nextInt(23)+1));
             int score = calculateSubscore(blueprint, steps);
             if(score>best||bestSteps==null){
-                System.out.println("Found better: "+score);
+//                System.out.println("Found better: "+score);
                 best = score;
                 bestSteps = steps;
                 lastChange = System.nanoTime();
             }
-            if(System.nanoTime()-lastChange>500_000_000l)break;//stop after 5 seconds of inactivity
+            if(System.nanoTime()-lastChange>timeout)break;//stop after 5 seconds of inactivity
         }
         return calculate(blueprint, bestSteps);
     }
@@ -186,6 +188,36 @@ public class Day19 extends Day{
             steps.add(rand.nextInt(steps.size()+1), robot);
         }
         return steps;
+    }
+
+    private int findBestSolutionWithMagic(Blueprint blueprint, int size, int tries, long timeout) {
+        int best = -1;
+        for(int j = 0; j<tries; j++){
+            best = Math.max(best, findGoodSolution(blueprint, size, timeout));
+        }
+        return best;
+    }
+    private int findBestSolutionWithMagicAndThreading(Blueprint blueprint, int size, int tries, long timeout){
+        int threads = 32;//cuz I have 16 cores. MWAHAHAHA
+        boolean[] done = new boolean[threads];
+        int[] solutions = new int[threads];
+        for(int thread = 0; thread < threads; thread++){
+            int t = thread;
+            new Thread(() -> {
+                solutions[t] = findBestSolutionWithMagic(blueprint, size, tries, timeout);
+                done[t] = true;
+                System.out.println("Thread "+t+" finished");
+            }).start();
+        }
+        while(true){
+            boolean actuallyDone = true;
+            for(boolean b : done)actuallyDone&=b;
+            if(actuallyDone)break;
+        }
+        int max = -1;
+        for(int i : solutions)if(i>max)max = i;
+        System.out.println(max);
+        return max;
     }
     public static enum Robot{
         ORE,
