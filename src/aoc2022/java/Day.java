@@ -26,7 +26,7 @@ public abstract class Day{
             while((line = reader.readLine())!=null){
                 s+=line+"\n";
             }
-            return s.trim();
+            return s.stripTrailing();
         } catch (IOException ex) {
             Logger.getLogger(Day.class.getName()).log(Level.SEVERE, null, ex);
         }
