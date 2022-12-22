@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Day22 extends Day{
     private char[][] map;
     private char[][] map2;
+    private int panelSize;
     public Day22(){
         super(22);
     }
@@ -11,61 +12,118 @@ public class Day22 extends Day{
     int x = 0, y = 0;
     @Override
     public void run(){
-        String[] split = input.split("\n\n");
-        String smap = split[0];
-        String[] splitMap = smap.split("\n");
-        map = new char[splitMap.length][];
-        map2 = new char[splitMap.length][];
-        for(int y = 0; y<splitMap.length; y++){
-            String line = splitMap[y];
-            map[y] = new char[line.length()];
-            map2[y] = new char[line.length()];
-            for(int x = 0; x<line.length(); x++){
-                map[y][x] = line.charAt(x);
-                map2[y][x] = line.charAt(x);
-            }
-        }
-        String instructions = split[1];
-        ArrayList<Object> moves = new ArrayList<>();
-        while(!instructions.isEmpty()){
-            if(instructions.startsWith("R")||instructions.startsWith("L")){
-                moves.add(instructions.charAt(0));
-                instructions = instructions.substring(1);
-                continue;
-            }
-            String numS = "";
-            int i = 0;
-            while(i<instructions.length()&&Character.isDigit(instructions.charAt(i))){
-                numS+=instructions.charAt(i);
-                i++;
-            }
-            instructions = instructions.substring(i);
-            moves.add(Integer.parseInt(numS));
-        }
-        while(map[y][x]==' ')x++;
-        for(Object o : moves){
-            if(o instanceof Character c){
-                if(c=='R')facing++;
-                if(c=='L')facing--;
-                if(facing>3)facing-=4;
-                if(facing<0)facing+=4;
-            }
-            if(o instanceof Integer I){
-                for(int i = 0; i<I; i++){
-                    if(!move())break;
-                    map2[y][x] = switch(facing){
-                        case 0 -> '>';
-                        case 1 -> 'v';
-                        case 2 -> '<';
-                        case 3 -> '^';
-                        default -> 'x';
-                    };
+        {//part1
+            String[] split = input.split("\n\n");
+            String smap = split[0];
+            String[] splitMap = smap.split("\n");
+            map = new char[splitMap.length][];
+            map2 = new char[splitMap.length][];
+            panelSize = map.length/4;
+            for(int y = 0; y<splitMap.length; y++){
+                String line = splitMap[y];
+                map[y] = new char[line.length()];
+                map2[y] = new char[line.length()];
+                for(int x = 0; x<line.length(); x++){
+                    map[y][x] = line.charAt(x);
+                    map2[y][x] = line.charAt(x);
                 }
             }
+            String instructions = split[1];
+            ArrayList<Object> moves = new ArrayList<>();
+            while(!instructions.isEmpty()){
+                if(instructions.startsWith("R")||instructions.startsWith("L")){
+                    moves.add(instructions.charAt(0));
+                    instructions = instructions.substring(1);
+                    continue;
+                }
+                String numS = "";
+                int i = 0;
+                while(i<instructions.length()&&Character.isDigit(instructions.charAt(i))){
+                    numS+=instructions.charAt(i);
+                    i++;
+                }
+                instructions = instructions.substring(i);
+                moves.add(Integer.parseInt(numS));
+            }
+            while(map[y][x]==' ')x++;
+            for(Object o : moves){
+                if(o instanceof Character c){
+                    if(c=='R')facing++;
+                    if(c=='L')facing--;
+                    if(facing>3)facing-=4;
+                    if(facing<0)facing+=4;
+                }
+                if(o instanceof Integer I){
+                    for(int i = 0; i<I; i++){
+                        map2[y][x] = switch(facing){
+                            case 0 -> '>';
+                            case 1 -> 'v';
+                            case 2 -> '<';
+                            case 3 -> '^';
+                            default -> 'x';
+                        };
+                        if(!move())break;
+                    }
+                }
+            }
+            System.out.println((x+1)*4+(y+1)*1000+facing);
         }
-        printMap(map2);
-        System.out.println(x+" "+y);
-        System.out.println((x+1)*4+(y+1)*1000+facing);
+        x = y = facing = 0;
+        {//part2
+            String[] split = input.split("\n\n");
+            String smap = split[0];
+            String[] splitMap = smap.split("\n");
+            map = new char[splitMap.length][];
+            map2 = new char[splitMap.length][];
+            for(int y = 0; y<splitMap.length; y++){
+                String line = splitMap[y];
+                map[y] = new char[line.length()];
+                map2[y] = new char[line.length()];
+                for(int x = 0; x<line.length(); x++){
+                    map[y][x] = line.charAt(x);
+                    map2[y][x] = line.charAt(x);
+                }
+            }
+            String instructions = split[1];
+            ArrayList<Object> moves = new ArrayList<>();
+            while(!instructions.isEmpty()){
+                if(instructions.startsWith("R")||instructions.startsWith("L")){
+                    moves.add(instructions.charAt(0));
+                    instructions = instructions.substring(1);
+                    continue;
+                }
+                String numS = "";
+                int i = 0;
+                while(i<instructions.length()&&Character.isDigit(instructions.charAt(i))){
+                    numS+=instructions.charAt(i);
+                    i++;
+                }
+                instructions = instructions.substring(i);
+                moves.add(Integer.parseInt(numS));
+            }
+            while(map[y][x]==' ')x++;
+            for(Object o : moves){
+                if(o instanceof Character c){
+                    if(c=='R')facing++;
+                    if(c=='L')facing--;
+                    if(facing>3)facing-=4;
+                    if(facing<0)facing+=4;
+                }
+                if(o instanceof Integer I){
+                    for(int i = 0; i<I; i++){
+                        if(!movep2())break;
+                        map2[y][x] = switch(facing){
+                            case 0 -> '>';
+                            case 1 -> 'v';
+                            case 2 -> '<';
+                            case 3 -> '^';
+                            default -> 'x';
+                        };
+                    }
+                }
+            }
+            System.out.println((x+1)*4+(y+1)*1000+facing);
+        }
     }
     public boolean move(){
         switch(facing){
@@ -99,6 +157,128 @@ public class Day22 extends Day{
                 }
         }
         return false;
+    }
+    public boolean movep2(){
+        int toX = x;
+        int toY = y;
+        int panelX = x/panelSize;
+        int panelY = y/panelSize;
+        int localX = x-(panelX*panelSize);
+        int localY = y-(panelY*panelSize);
+        int toFacing = facing;
+        switch(facing){//hardcoded to my layout, cuz it's easier lel
+            case 0://right
+                toX++;
+                if(toX>=map[toY].length||map[toY][toX]==' '){
+                    int pos = localY;
+                    switch(panelY){
+                        case 0:
+                            toFacing = 2;
+                            toX = panelSize*2-1;
+                            toY = panelSize*2+panelSize-pos-1;
+                            break;
+                        case 1:
+                            toFacing = 3;
+                            toX = panelSize*2+pos;
+                            toY = panelSize-1;
+                            break;
+                        case 2:
+                            toFacing = 2;
+                            toX = panelSize*3-1;
+                            toY = panelSize-pos-1;
+                            break;
+                        case 3:
+                            toFacing = 3;
+                            toX = panelSize+pos;
+                            toY = panelSize*3-1;
+                            break;
+                    }
+                    System.out.println(panelX+" "+panelY+" wrapR at "+localX+" "+localY+" ("+x+" "+y+")");
+                }
+                break;
+            case 1://down
+                toY++;
+                if(toY>=map.length||map[toY].length<=toX||map[toY][toX]==' '){
+                    int pos = localX;
+                    switch(panelX){
+                        case 0:
+                            toX = panelSize*2+pos;
+                            toY = 0;
+                            break;
+                        case 1:
+                            toFacing = 2;
+                            toX = panelSize-1;
+                            toY = panelSize*3+pos;
+                            break;
+                        case 2:
+                            toFacing = 2;
+                            toX = panelSize*2-1;
+                            toY = panelSize+pos;
+                            break;
+                    }
+                    System.out.println(panelX+" "+panelY+" wrapD at "+localX+" "+localY+" ("+x+" "+y+")");
+                }
+                break;
+            case 2://left
+                toX--;
+                if(toX<0||map[toY][toX]==' '){
+                    int pos = localY;
+                    switch(panelY){
+                        case 0:
+                            toX = 0;
+                            toY = panelSize*3-pos-1;
+                            toFacing = 0;
+                            break;
+                        case 1:
+                            toX = pos;
+                            toY = panelSize*2;
+                            toFacing = 1;
+                            break;
+                        case 2:
+                            toX = panelSize;
+                            toY = panelSize-pos-1;
+                            toFacing = 0;
+                            break;
+                        case 3:
+                            toX = panelSize+pos;
+                            toY = 0;
+                            toFacing = 1;
+                            break;
+                    }
+                    System.out.println(panelX+" "+panelY+" wrapL at "+localX+" "+localY+" ("+x+" "+y+")");
+                }
+                break;
+            case 3://up
+                toY--;
+                if(toY<0||map[toY][toX]==' '){
+                    int pos = localX;
+                    switch(panelX){
+                        case 0:
+                            toX = panelSize;
+                            toY = panelSize+pos;
+                            toFacing = 0;
+                            break;
+                        case 1:
+                            toX = 0;
+                            toY = panelSize*3+pos;
+                            toFacing = 0;
+                            break;
+                        case 2:
+                            toX = pos;
+                            toY = panelSize*4-1;
+                            toFacing = 3;
+                            break;
+                    }
+                    System.out.println(panelX+" "+panelY+" wrapU at "+localX+" "+localY+" ("+x+" "+y+")");
+                }
+                break;
+        }
+        if(map[toY][toX]=='#')return false;
+        if(toFacing!=facing)printMap(map2);
+        x = toX;
+        y = toY;
+        facing = toFacing;
+        return true;
     }
     public int getLeft(int x, int y){
         if(x==0||map[y][x-1]==' '){
@@ -150,6 +330,11 @@ public class Day22 extends Day{
         for(char[] line : map2){
             for(char c : line)System.out.print(c);
             System.out.println();
+        }
+        for(int y = 0; y<map2.length; y++){
+            for(int x = 0; x<map2[y].length; x++){
+                map2[y][x]=map[y][x];
+            }
         }
     }
 }
