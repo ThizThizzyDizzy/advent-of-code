@@ -25,6 +25,7 @@ public class Main{
         days[19] = new Day20();
         days[20] = new Day21();
         days[21] = new Day22();
+        days[22] = new Day23();
     }
     public static void main(String[] args){
         for(int i = 0; i<25; i++){
