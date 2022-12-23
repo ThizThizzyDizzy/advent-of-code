@@ -16,10 +16,14 @@ public class Day23 extends Day{
             }
             y++;
         }
-        for(int i = 0; i<10; i++){
-            processRound();
+        long rounds = 0;
+        while(true){
+            int moved = processRound();
+            rounds++;
+            if(rounds==10)printMap(elves, true);
+            if(moved<=0)break;
         }
-        printMap(elves, true);
+        System.out.println(rounds);
     }
     ArrayList<ElfMoveOption> options = new ArrayList<>();
     {
@@ -48,7 +52,7 @@ public class Day23 extends Day{
             }
         });
     }
-    private void processRound(){
+    private int processRound(){
 //        cache.clear();
         ArrayList<ElfMove> moves = new ArrayList<>();
         for(Elf elf : elves){
@@ -88,6 +92,7 @@ public class Day23 extends Day{
             move.elf.y = move.toY;
         }
         options.add(options.remove(0));
+        return moves.size();
     }
     private Elf getElf(int x, int y){
         for(Elf elf : elves){
