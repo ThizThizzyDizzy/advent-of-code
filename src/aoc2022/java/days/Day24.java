@@ -3,7 +3,6 @@ import aoc2022.java.Day;
 import java.util.ArrayList;
 public class Day24 extends Day{
     private int width, height;
-    private static int endx, endy;
     public Day24(){
         super(24);
     }
@@ -14,8 +13,8 @@ public class Day24 extends Day{
         String[] lines = input.split("\n");
         width = lines[0].length();
         height = lines.length;
-        endy = height-1;
-        endx = width-2;
+        int endy = height-1;
+        int endx = width-2;
         for(int y = 0; y<lines.length; y++){
             String line = lines[y];
             for(int x = 0; x<line.length(); x++){
@@ -27,12 +26,17 @@ public class Day24 extends Day{
             }
         }
         generateSpaceTimeBlizzardMap();
-        System.out.println(path(1, 0, endx, endy).size());
+        int time1 = path(1, 0, 0, endx, endy).size();
+        System.out.println(time1);
+        int time2 = path(endx, endy, time1, 1, 0).size()+time1;
+        int time3 = path(1, 0, time2, endx, endy).size()+time2;
+        System.out.println(time3);
     }
-    private ArrayList<Node> path(int startX, int startY, int endX, int endY){
+    private ArrayList<Node> path(int startX, int startY, int startT, int endx, int endy){
+        nodes.clear();
         ArrayList<Node> open = new ArrayList<>();
         ArrayList<Node> closed = new ArrayList<>();
-        Node start = getNode(startX, startY, 0);
+        Node start = getNode(startX, startY, startT, endx, endy);
         start.g = 0;
         start.f = start.h;
         open.add(start);
@@ -45,7 +49,7 @@ public class Day24 extends Day{
             if(node.x==endx&&node.y==endy)return retrace(node);
             generateSpaceTimeBlizzardMaps(node.t+1);
             for(Direction d : Direction.values()){
-                Node neighbor = getNode(node.x+d.dx, node.y+d.dy, node.t+1);
+                Node neighbor = getNode(node.x+d.dx, node.y+d.dy, node.t+1, endx, endy);
                 if(neighbor==null)continue;
                 if(spaceTimeBlizzardMap.get(neighbor.t)[neighbor.x][neighbor.y])continue;
                 int g = node.g+1;
@@ -67,15 +71,15 @@ public class Day24 extends Day{
         return path;
     }
     ArrayList<Node> nodes = new ArrayList<>();
-    private Node getNode(int x, int y, int t){
+    private Node getNode(int x, int y, int t, int endx, int endy){
         if(x<=0||x>=width-1)return null;
         if(y<0||y>height-1)return null;
         if(y==0&&x!=1)return null;
-        if(y==height-1&&x!=endx)return null;
+        if(y==height-1&&x!=width-2)return null;
         for(Node node : nodes){
             if(node.x==x&&node.y==y&&node.t==t)return node;
         }
-        Node node = new Node(x, y, t);
+        Node node = new Node(x, y, t, endx, endy);
         nodes.add(node);
         return node;
     }
@@ -120,7 +124,7 @@ public class Day24 extends Day{
         int f = Integer.MAX_VALUE;
         final int h;
         private Node parent;
-        public Node(int x, int y, int t){
+        public Node(int x, int y, int t, int endx, int endy){
             this.x = x;
             this.y = y;
             this.t = t;
