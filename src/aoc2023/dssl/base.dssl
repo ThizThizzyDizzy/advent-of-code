@@ -1,0 +1,17 @@
+/readDay {
+    "D:\\NetBeansProjects\\Advent of Code\\src\\aoc2023\\input\\day" exch ~ ".txt" ~ readString
+} macro
+/readString {
+    "java.io.File.new" native "java.io.File.toPath" native "java.nio.file.Files.readString" native
+} macro
+/startsWithOffset {
+    /offset exch def
+    /start exch def
+    /str exch def
+    
+    /str str offset substring =
+    start str .startsWith
+} macro
+/substring {
+    exch "java.lang.String.substring" native
+} macro

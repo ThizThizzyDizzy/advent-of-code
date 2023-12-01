@@ -1,0 +1,56 @@
+"base.dssl" include
+/input 1 readDay def
+
+/total 0 def
+"\n" input .split {
+    /line exch def
+    /start -1 def
+    /end -1 def
+    ( 0 line .size ) {
+        /val -1 def
+        /off exch def
+        ( 1 10 ) {
+            /i exch def
+            line i .toString off startsWithOffset {
+                /val i =
+            } if
+        } foreach
+        val -1 != {
+            start -1 == {
+                /start val =
+            } if
+            /end val =
+        } if
+    } foreach
+    /total start end ~ Int cast +=
+} foreach
+total println
+
+/total 0 =
+/nums [ "one" "two" "three" "four" "five" "six" "seven" "eight" "nine" ] def
+"\n" input .split {
+    /line exch def
+    /start -1 def
+    /end -1 def
+    ( 0 line .size ) {
+        /val -1 def
+        /off exch def
+        ( 1 10 ) {
+            /i exch def
+            line i .toString off startsWithOffset {
+                /val i =
+            } if
+            line i 1 - nums .get off startsWithOffset {
+                /val i =
+            } if
+        } foreach
+        val -1 != {
+            start -1 == {
+                /start val =
+            } if
+            /end val =
+        } if
+    } foreach
+    /total start end ~ Int cast +=
+} foreach
+total println
