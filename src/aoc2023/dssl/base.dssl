@@ -1,8 +1,13 @@
+$env include
+$fs include
+/unpack {
+    { } foreach
+} def
 /readDay {
-    "D:\\NetBeansProjects\\Advent of Code\\src\\aoc2023\\input\\day" exch ~ ".txt" ~ readString
+    "../input/day" exch ~ ".txt" ~ fromRoot readString .trim
 } macro
 /readString {
-    "java.io.File.new" native "java.io.File.toPath" native "java.nio.file.Files.readString" native
+    "" exch readLines { '\n' ~ ~ } foreach
 } macro
 /startsWithOffset {
     /offset exch def
