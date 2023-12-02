@@ -1,0 +1,61 @@
+"base.dssl" include
+$math include
+/input 2 readDay def
+
+/Round {
+    /init {
+        /this exch def
+        /str exch def
+        /this .r 0 def
+        /this .g 0 def
+        /this .b 0 def
+        "," str .split {
+            .trim " " exch .split unpack
+            dup "red" == { /this .r exch } if
+            dup "green" == { /this .g exch } if
+            dup "blue" == { /this .b exch } if
+            pop exch Int cast +=
+        } foreach
+        this
+    } magic
+} class
+
+/Game {
+    /init {
+        /this exch def
+        /str exch def
+        /this .rounds [ ] def
+        /this .r 0 def
+        /this .g 0 def
+        /this .b 0 def
+        ":" str .split 0 exch .get 5 substring Int cast /this .id exch def
+        ":" str .split 1 exch .get .trim ";" exch .split {
+            .trim Round new /round exch def round this .rounds .add
+            /* Calculate minimum game power */
+            /this .r this .r round .r max =
+            /this .g this .g round .g max =
+            /this .b this .b round .b max =
+        } foreach
+        /this .power 1 def
+        this .r 0 > { /this .power this .r *= } if
+        this .g 0 > { /this .power this .g *= } if
+        this .b 0 > { /this .power this .b *= } if
+        this
+    } magic
+} class
+
+/games [ ] def
+
+"\n" input .split {
+    Game new games .add
+} foreach
+
+/total 0 def
+/totalPower 0 def
+games {
+    /game exch def
+    game .r 12 <= game .g 13 <= & game .b 14 <= & { /total game .id += } if
+    /totalPower game .power +=
+} foreach
+total println
+totalPower println

@@ -4,7 +4,7 @@ public class Main{
     public static Day[] days = new Day[25];
     static{
         days[0] = new Day1();
-//        days[1] = new Day2();
+        days[1] = new Day2();
 //        days[2] = new Day3();
 //        days[3] = new Day4();
 //        days[4] = new Day5();

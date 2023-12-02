@@ -2,7 +2,7 @@ $env include
 $fs include
 /unpack {
     { } foreach
-} def
+} macro
 /readDay {
     "../input/day" exch ~ ".txt" ~ fromRoot readString .trim
 } macro
@@ -18,5 +18,8 @@ $fs include
     start str .startsWith
 } macro
 /substring {
-    exch "java.lang.String.substring" native
+    /start exch def
+    /str exch def
+    
+    "" str { start 0 > { pop /start 1 -= } { ~ } ifelse } foreach
 } macro
