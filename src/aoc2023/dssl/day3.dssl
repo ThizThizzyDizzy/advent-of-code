@@ -1,0 +1,73 @@
+"base.dssl" include
+/input 3 readDay def
+
+/rows "\n" input .split def
+
+/symbols [ ] def
+
+/Symbol {
+    /init {
+        /this exch def
+        /this .y exch def
+        /this .x exch def
+        /this .c exch def
+        /this .value 1 def
+        /this .count 0 def
+        this
+    } magic
+} class
+
+/nonSymbols "1234567890." def
+/numbers "1234567890" def
+
+( 0 rows .size ) {
+    /y exch def
+    /row y rows .get def
+    ( 0 row .size ) {
+        /x exch def
+        /char x row .get def
+        char nonSymbols .contains ! {
+            char x y Symbol new symbols .add
+        } if
+    } foreach
+} foreach
+/total 0 def
+( 0 rows .size ) {
+    /y exch def
+    /row y rows .get def
+    /last '.' def
+    ( 0 row .size ) {
+        /x exch def
+        /char x row .get def
+        last numbers .contains ! char numbers .contains & {
+            /num "" def
+            ( x row .size ) {
+                /x2 exch def
+                /ch x2 row .get def
+                ch numbers .contains {
+                    /num ch ~=
+                } {
+                    break
+                } ifelse
+            } foreach
+            symbols {
+                /s exch def
+                s .x x 1 - >= s .y y 1 - >= & s .x x num .size + <= & s .y y 1 + <= & {
+                    /s .value num Int cast *=
+                    /s .count ++
+                    /total num Int cast +=
+                } if
+            } foreach
+        } if
+        /last char =
+    } foreach
+} foreach
+total println
+/totalRatio 0 def
+symbols {
+    /s exch def
+    s .c '*' == s .count 2 == & {
+        /totalRatio s .value +=
+    } if
+} foreach
+totalRatio println
