@@ -1,0 +1,40 @@
+"base.dssl" include
+/input 4 readDay def
+
+/cards "\n" input .split def
+/count [ ] def
+cards .size { 1 count .add } repeat
+/total 0 def
+( 0 cards .size ) {
+    /i exch def
+    /card i cards .get def
+    /strs "[:|]" card .split def
+    /p1val 1 def
+    /matches 0 def
+    " " 1 strs .get .split {
+        /cardNum exch def
+        cardNum .trim "" == { continue } if
+        /n1 cardNum Int cast def
+        " " 2 strs .get .split {
+            /haveNum exch def
+            haveNum .trim "" == { continue } if
+            /n2 haveNum Int cast def
+            n1 n2 == {
+                /p1val 2 *=
+                /matches ++
+                break
+            } if
+        } foreach
+    } foreach
+    /p1val 2 /=
+    /total p1val +=
+    ( 1 matches 1 + ) {
+        /off exch def
+        i off + cards .size >= { break } if
+        /was i off + count .get def
+        /add i count .get def
+        i off + was add + count .put
+    } foreach
+} foreach
+total println
+0 count { + } foreach println

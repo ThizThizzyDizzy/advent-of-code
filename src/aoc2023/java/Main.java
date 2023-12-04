@@ -6,7 +6,7 @@ public class Main{
         days[0] = new Day1();
         days[1] = new Day2();
         days[2] = new Day3();
-//        days[3] = new Day4();
+        days[3] = new Day4();
 //        days[4] = new Day5();
 //        days[5] = new Day6();
 //        days[6] = new Day7();
