@@ -1,8 +1,7 @@
 $env include
 $fs include
-/unpack {
-    { } foreach
-} macro
+$math include
+"legacy.dssl" include
 /readDay {
     "../input/day" exch ~ ".txt" ~ fromRoot readString .trim
 } macro
@@ -22,4 +21,11 @@ $fs include
     /str exch def
     
     "" str { start 0 > { pop /start 1 -= } { ~ } ifelse } foreach
+} macro
+/for {
+    /func exch def
+    /iter exch def
+    /lbl exch def
+    lbl 0 def
+    iter { lbl exch = func exec } foreach
 } macro

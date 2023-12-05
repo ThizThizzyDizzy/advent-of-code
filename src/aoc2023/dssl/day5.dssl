@@ -1,0 +1,105 @@
+"base.dssl" include
+/input 5 readDay def
+
+/MapResult {
+    /init {
+        /this exch def
+        /this .len exch def
+        /this .val exch def
+        this
+    } magic
+} class
+/Map {
+    /init {
+        /this exch def
+        /this .ranges [ ] def
+        this
+    } magic
+    /map {
+        /this exch def
+        /i exch def
+        /return 0 def
+        /range this .ranges {
+            /result i range .map def
+            result null != { result /return 1 = break } if
+        } for
+        return 0 == {
+            /end 999999999999999999999999999999999999999999999999999999999 def
+            /r this .ranges {
+                r .src i < { continue } if
+                end -1 == { /end r .src = } { /end end r .src min = } ifelse
+            } for
+            i end i - MapResult new
+        } if
+    } macro
+} class
+/Rang {
+    /init {
+        /this exch def
+        /this .len exch def
+        /this .dst exch def
+        /this .src exch def
+        this
+    } magic
+    /map {
+        /this exch def
+        /i exch def
+        i this .src < i this .src this .len + > | {
+            null
+        } {
+            i this .src - this .dst + this .len i this .src - - MapResult new
+        } ifelse
+    } macro
+} class
+
+/sections input "\n\n" split def
+/seeds [ ] def
+/maps [ ] def
+sections 0 get ":" split 1 get .trim " " split {
+    Int cast seeds .add
+} foreach
+
+sections 0 get sections .remove
+
+sections {
+    /map Map new def
+    /ranges exch "\n" split def
+    ranges 0 removeAt
+    ranges {
+        " " split unpack
+        /len exch Int cast def
+        /src exch Int cast def
+        /dst exch Int cast def
+        map .ranges src dst len Rang new add
+    } foreach
+    maps map add
+} foreach
+
+/ints seeds .clone def
+/map maps {
+    /i ( 0 ints .size ) {
+        ints i get map .map i exch .val ints set
+    } for
+} for
+/mn -1 def
+ints { Int cast  mn -1 == { /mn exch = } { /mn exch mn min = } ifelse } foreach
+mn println
+/mn -1 =
+/i ( 0 seeds .size 2 ) {
+   /start seeds i get def
+   /len seeds i 1 + get def
+   /l start def
+   {
+       /num l def
+       /length len def
+       /map maps {
+           /result num map .map def
+           /num result .val =
+           /length length result .len min =
+       } for
+       /l 1 length max +=
+       mn -1 == { /mn num = } { /mn num mn min = } ifelse
+       l start len + >= { break } if
+   } loop
+} for
+mn println
