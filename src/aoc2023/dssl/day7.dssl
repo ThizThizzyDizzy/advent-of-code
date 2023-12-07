@@ -1,0 +1,101 @@
+"base.dssl" include
+/input 7 readDay def
+
+/values "23456789TJQKA" def
+/jokerValues "J23456789TQKA" def
+
+/calcType {
+    /hand exch def
+    /typ null def
+    /charCounts [| |] def
+    hand {
+        /c exch def
+        c charCounts c charCounts .containsKey { c charCounts .get } { 0 } ifelse 1 + exch .put
+    } foreach
+    /chars charCounts .keys List cast def
+    {
+        /o2 exch def
+        /o1 exch def
+        charCounts o2 get charCounts o1 get -
+    }
+    chars .sortBy
+    /size chars .size def
+    size 5 == {
+        6 /* high card */
+    } if
+    size 4 == {
+        5 /* one pair */
+    } if
+    size 3 == {
+        charCounts chars 0 get get 3 == {
+            3 /*three of kind */
+        } if
+        charCounts chars 0 get get 2 == {
+            4 /* two pair */
+        } if
+    } if
+    size 2 == {
+        charCounts chars 0 get get 3 == {
+            2 /* full house */
+        } {
+            1 /* four of kind */
+        } ifelse
+    } if
+    size 1 == {
+        0 /* five of kind */
+    } if
+} macro
+
+/Hand {
+    /init {
+        /this exch def
+        /this .bet exch def
+        /this .hand exch def
+        /this .typ this .hand calcType def
+        /this .jokerType null def
+        /v ( jokerValues .size 1 - 0 -1 ) {
+            /t "J" jokerValues v get String cast this .hand .replace calcType def
+            this .jokerType null == { /this .jokerType t = } if
+            t this .jokerType < { /this .jokerType t = } if
+        } for
+        this
+    } magic
+    /compareTo {
+        /this exch def
+        /other exch def
+        /value values jokerValues == { other .jokerType this .jokerType - } { other .typ this .typ - } ifelse def
+        value 0 == {
+            /i ( 0 5 ) {
+                /v1 values this .hand i get indexOf def
+                /v2 values other .hand i get indexOf def
+                /result v1 v2 - def
+                result 0 != {
+                    result break
+                } if
+            } for
+        } { value } ifelse
+    } macro
+} class
+
+/hands [ ] def
+/str input "\n" split {
+    /strs str " " split def
+    hands strs 0 get strs 1 get Int cast Hand new add
+} for
+{ exch .compareTo } hands .sortBy
+/total 0 def
+/i ( 0 hands .size ) {
+    /hand hands i get def
+    /hand .rank i 1 + def
+    /total hand .rank hand .bet * +=
+} for
+total println
+/values jokerValues =
+{ exch .compareTo } hands .sortBy
+/total 0 =
+/i2 ( 0 hands .size ) {
+    /hand hands i2 get def
+    /hand .rank i2 1 + =
+    /total hand .rank hand .bet * +=
+} for
+total println
