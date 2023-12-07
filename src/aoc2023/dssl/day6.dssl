@@ -1,0 +1,40 @@
+"base.dssl" include
+/input 6 readDay def
+
+/strs input "\n" split def
+/times strs 0 get "Time:" .size substring .trim " +" split def
+/distances strs 1 get "Distance:" .size substring .trim " +" split def
+/total 1 def
+
+/calc {
+    /dist exch def
+    /time exch def
+    /firstWin -1 def
+    /l ( dist time / time ) {
+        /d time l - l * def
+        firstWin -1 == d dist > & {
+            /firstWin l =
+            break
+        } if
+    } for
+    /lastWin -1 def
+    /l2 ( time 1 - 0 -1 ) {
+        /d time l2 - l2 * def
+        lastWin -1 == d dist > & {
+            /lastWin l2 =
+            break
+        } if
+    } for
+    lastWin firstWin - 1 +
+} macro
+
+/i ( 0 times .size ) {
+    /time times i get Int cast def
+    /dist distances i get Int cast def
+    /total time dist calc *=
+} for
+
+total println
+/timeS "" times { ~ } foreach def
+/distS "" distances { ~ } foreach def
+timeS Int cast distS Int cast calc println

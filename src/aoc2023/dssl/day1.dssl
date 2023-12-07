@@ -11,7 +11,7 @@
         /off exch def
         ( 1 10 ) {
             /i exch def
-            line i .toString off startsWithOffset {
+            line i String cast off startsWithOffset {
                 /val i =
             } if
         } foreach
@@ -37,7 +37,7 @@ total println
         /off exch def
         ( 1 10 ) {
             /i exch def
-            line i .toString off startsWithOffset {
+            line i String cast off startsWithOffset {
                 /val i =
             } if
             line i 1 - nums .get off startsWithOffset {

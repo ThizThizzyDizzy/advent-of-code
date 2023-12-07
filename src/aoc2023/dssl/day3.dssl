@@ -27,7 +27,7 @@
         /x exch def
         /char x row .get def
         char nonSymbols .contains ! {
-            char x y Symbol new symbols .add
+            char x y Symbol new symbols .push
         } if
     } foreach
 } foreach

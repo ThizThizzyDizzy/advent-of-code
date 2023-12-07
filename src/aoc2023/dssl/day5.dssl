@@ -56,15 +56,15 @@
 /seeds [ ] def
 /maps [ ] def
 sections 0 get ":" split 1 get .trim " " split {
-    Int cast seeds .add
+    Int cast seeds .push
 } foreach
 
-sections 0 get sections .remove
+sections 0 remove
 
 sections {
     /map Map new def
     /ranges exch "\n" split def
-    ranges 0 removeAt
+    ranges 0 remove
     ranges {
         " " split unpack
         /len exch Int cast def

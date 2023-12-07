@@ -3,7 +3,7 @@
 
 /cards "\n" input .split def
 /count [ ] def
-cards .size { 1 count .add } repeat
+cards .size { 1 count .push } repeat
 /total 0 def
 ( 0 cards .size ) {
     /i exch def
@@ -33,7 +33,7 @@ cards .size { 1 count .add } repeat
         i off + cards .size >= { break } if
         /was i off + count .get def
         /add i count .get def
-        i off + was add + count .put
+        i off + was add + count .set
     } foreach
 } foreach
 total println

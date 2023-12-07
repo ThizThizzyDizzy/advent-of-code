@@ -1,10 +1,6 @@
 /get { exch .get } macro
-/add { exch .add } macro
-/set { .put } macro
+/add { exch .push } macro
+/set { .set } macro
 /remove { exch .remove } macro
 /split { exch .split } macro
 /unpack { { } foreach } macro
-/removeAt {
-    /idx exch def
-    dup idx get remove
-} macro
