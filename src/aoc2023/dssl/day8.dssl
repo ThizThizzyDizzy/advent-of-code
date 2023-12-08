@@ -1,0 +1,92 @@
+"base.dssl" include
+/input 8 readDay def
+
+/directions input "\n\n" split 0 get def
+/left [| |] def
+/right [| |] def
+/s input "\n\n" split 1 get "\n" split {
+    /key s "=" split 0 get .trim def
+    /vals "[(),]" "" s "=" split 1 get .trim .replace " " split def
+    key vals 0 get left .put
+    key vals 1 get right .put
+} for
+/start "AAA" def
+/steps 0 def
+/idx 0 def
+{
+    /c directions idx get def
+    c 'L' == { /start left start get = } if
+    c 'R' == { /start right start get = } if
+    /idx ++
+    /steps ++
+    idx directions .size >= { /idx 0 = } if
+    start "ZZZ" == { break } if
+} loop
+steps println
+
+/Node {
+    /init {
+        /this exch def
+        /this .step exch def
+        /this .idx exch def
+        /this .node exch def
+        this
+    } magic
+} class
+
+/Path {
+    /init {
+        /this exch def
+        /lastNodes [ ] def
+        /node exch def
+        /steps 0 def
+        /idx 0 def
+        lastNodes node idx steps Node new add
+        {
+            /c directions idx get def
+            c 'L' == { /node left node get = } if
+            c 'R' == { /node right node get = } if
+            /idx ++
+            /steps ++
+            idx directions .size >= { /idx 0 = } if
+            node 2 get 'Z' == {
+                /n node idx steps Node new def
+                /breaks false def
+                /contained lastNodes {
+                    contained .node node == contained .idx idx == & {
+                        /this .initialSteps contained .step def
+                        /this .repeatSteps steps contained .step - def
+                        /breaks true =
+                        break
+                    } if
+                } for
+                breaks true == { break } if
+                lastNodes n add
+            } if
+        } loop
+        this
+    } magic
+} class
+
+/paths [ ] def
+/st left .keys {
+    st 2 get 'A' == { paths st Path new add } if
+} for
+
+/calcLCM {
+    /n2 exch def
+    /n1 exch def
+    /lcm n1 n2 max def
+    {
+        lcm n1 n2 min % 0 != {
+            /lcm n1 n2 max +=
+        } { break } ifelse
+    } loop
+    lcm
+} macro
+
+/lcm 1 def
+/path paths {
+    /lcm lcm path .repeatSteps calcLCM =
+} for
+lcm println
