@@ -1,0 +1,96 @@
+"base.dssl" include
+/input 9 readDay def
+
+/ReportRow {
+    /init {
+        /this exch def
+        /this .values [ ] def
+        /val exch def
+        val type List == {
+            val { this .values .push } foreach
+        } {
+            /i ( 0 val .values .size 1 - ) {
+                this .values val .values i 1 + get val .values i get - add
+            } for
+        } ifelse
+        this
+    } magic
+    /isEmpty {
+        /this exch def
+        true
+        this .values { 0 != { pop false break } if } foreach
+    } macro
+    /extrapolate {
+        /this exch def
+        /lower exch def
+        this .isEmpty {
+            this .values 0 add
+            0
+        } {
+            /val this .values dup .size 1 - get lower .values this .values .size 1 - get + def
+            this .values val add
+            val
+        } ifelse
+    } macro
+    /reverseExtrapolate {
+        /this exch def
+        /lower exch def
+        this .isEmpty {
+            0 0 this .values .insert
+            0
+        } {
+            /val this .values 0 get lower .values 0 get - def
+            0 val this .values .insert
+            val
+        } ifelse
+    } macro
+} class
+
+/Report {
+    /init {
+        /this exch def
+        /vals exch def
+        /this .rows [ ] def
+        /row vals ReportRow new def
+        this .rows row add
+        {
+            /row row ReportRow new =
+            this .rows row add
+            row .isEmpty { break } if
+        } loop
+        this
+    } magic
+    /extrapolate {
+        /this exch def
+        /val -1 def
+        /i ( this .rows .size 1 - -1 -1 ) {
+            /current this .rows i get def
+            /lower i this .rows .size 1 - == { null } { this .rows i 1 + get } ifelse def
+            /val lower current .extrapolate =
+        } for
+        val
+    } macro
+    /reverseExtrapolate {
+        /this exch def
+        /val -1 def
+        /i ( this .rows .size 1 - -1 -1 ) {
+            /current this .rows i get def
+            /lower i this .rows .size 1 - == { null } { this .rows i 1 + get } ifelse def
+            /val lower current .reverseExtrapolate =
+        } for
+        val
+    } macro
+} class
+
+/total 0 def
+/total2 0 def
+/s input "\n" split {
+    /strs s " " split def
+    /ints [ ] def
+    strs { ints exch Int cast add } foreach
+    /report ints Report new def
+    /total report .extrapolate +=
+    /total2 report .reverseExtrapolate +=
+} for
+total println
+total2 println

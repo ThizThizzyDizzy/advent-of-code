@@ -11,7 +11,7 @@ public class Main{
         days[5] = new Day6();
         days[6] = new Day7();
         days[7] = new Day8();
-//        days[8] = new Day9();
+        days[8] = new Day9();
 //        days[9] = new Day10();
 //        days[10] = new Day11();
 //        days[11] = new Day12();
