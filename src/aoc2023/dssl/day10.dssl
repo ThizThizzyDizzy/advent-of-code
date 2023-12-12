@@ -1,0 +1,164 @@
+"base.dssl" include
+/input 10 readDay def
+
+/mk2dArr {
+    /y exch def
+    /x exch def
+    [ ( 0 x ) { pop [ ( 0 y ) { pop 0 } foreach ] } foreach ]
+} macro
+
+/rows input "\n" split def
+/map rows 0 get .size rows .size mk2dArr def
+
+/y ( 0 rows .size ) {
+    /x ( 0 rows y get .size ) {
+        y rows y get x get map x get set
+    } for
+} for
+
+/startX 0 def
+/startY 0 def
+/posX 0 def
+/posY 0 def
+/lastX 0 def
+/lastY 0 def
+
+/Pipe {
+    /Pipe .VERT '|' true false true false 1 0 -1 0 Pipe new
+    /Pipe .HORIZ '-' false true false true 0 1 0 -1 Pipe new
+    /Pipe .NE 'L' true true false false 1 -1 -1 1 Pipe new
+    /Pipe .NW 'J' true false false true 1 1 -1 -1 Pipe new
+    /Pipe .SW '7' false false true true -1 1 1 -1 Pipe new
+    /Pipe .SE 'F' false true true false 1 1 -1 -1 Pipe new
+    /Pipe .NONE '.' false false false false 0 0 0 0 Pipe new
+} {
+    /__init__ {
+        /this exch def
+        /this .ly exch def
+        /this .lx exch def
+        /this .ry exch def
+        /this .rx exch def
+        /this .w exch def
+        /this .s exch def
+        /this .e exch def
+        /this .n exch def
+        /this .c exch def
+        this
+    } macro
+} enum
+/Point {
+    /__init__ {
+        /this exch def
+        /this .y exch def
+        /this .x exch def
+        this
+    } macro
+    /__eq__ {
+        /this exch def
+        dup .x this .x == exch .y this .y == &
+    } macro
+} class
+
+/getPipe {
+    /y exch def
+    /x exch def
+    Pipe .NONE
+    /p Pipe .values {
+        p .c map x get y get == { pop p break } if
+    } for
+} macro
+
+/x ( 0 map .size ) {
+    /y ( 0 map x get .size ) {
+        map x get y get 'S' == {
+            /startX x =
+            /startY y =
+            /* assume it's not on the edge; it wasn't for me, so it's fine(tm) */
+            /north x y 1 - getPipe .s def
+            /east x 1 + y getPipe .w def
+            /south x y 1 + getPipe .n def
+            /west x 1 - y getPipe .e def
+            /p Pipe .values {
+                north p .n == east p .e == south p .s == west p .w == & & & {
+                    y p .c map x get set
+                } if
+            } for
+        } if
+    } for
+} for
+/lastX startX =
+/posX startX =
+/lastY startY =
+/posY startY =
+/i 0 def
+
+/lop [ ] def
+/interiorChecks [ ] def
+
+/validateInterior {
+    /newInteriorChecks [ ] def
+    /check interiorChecks {
+        check lop containsEq { continue } if
+        check newInteriorChecks containsEq { continue } if
+        newInteriorChecks check add
+    } for
+    /interiorChecks newInteriorChecks =
+} macro
+/march {
+    /fromX lastX def
+    /fromY lastY def
+    /pipe posX posY getPipe def
+    posX startX == posY startY == & startX fromX != fromY startY != | & { false } {
+        /lastX posX =
+        /lastY posY =
+        lop lastX lastY Point new add
+        pipe .n fromY posY >= & { /posY -- } {
+            pipe .e fromX posX <= & { /posX ++ } {
+                pipe .s fromY posY <= & { /posY ++ } {
+                    pipe .w fromX posX >= & { /posX -- } if
+                } ifelse
+            } ifelse
+        } ifelse
+        /goingNorth posY lastY < def
+        /goingEast posX lastX > def
+        /goingSouth posY lastY > def
+        /goingWest posX lastX < def
+        /reversePipe false def
+        pipe .n { /reversePipe goingNorth ! = } {
+            pipe .e { /reversePipe goingEast ! = } {
+                pipe .s { /reversePipe goingSouth ! = } {
+                    pipe .w { /reversePipe goingWest ! = } if
+                } ifelse
+            } ifelse
+        } ifelse
+        /inX reversePipe { pipe .lx } { pipe .rx } ifelse def
+        /inY reversePipe { pipe .ly } { pipe .ry } ifelse def
+        interiorChecks lastX inX + lastY inY + Point new add
+        inX 0 != { interiorChecks lastX inX + lastY Point new add } if
+        inY 0 != { interiorChecks lastX lastY inY + Point new add } if
+        true
+    } ifelse
+} macro
+
+{
+    march { /i ++ } { break } ifelse
+} loop
+i 2 / println
+validateInterior
+/somethingChanged false def
+{
+    /somethingChanged false =
+    /prevQuantity interiorChecks .size def
+    /newInterior [ ] def
+    /p interiorChecks {
+        /dx ( -1 2 ) {
+            /dy ( -1 2 ) {
+                newInterior p .x dx + p .y dy + Point new add
+            } for
+        } for
+    } for
+    /interiorChecks newInterior =
+    validateInterior
+    interiorChecks .size prevQuantity > { /somethingChanged true = } if
+} { somethingChanged } doWhile
+interiorChecks .size println

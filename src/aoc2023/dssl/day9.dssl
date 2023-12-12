@@ -2,7 +2,7 @@
 /input 9 readDay def
 
 /ReportRow {
-    /init {
+    /__init__ {
         /this exch def
         /this .values [ ] def
         /val exch def
@@ -14,7 +14,7 @@
             } for
         } ifelse
         this
-    } magic
+    } macro
     /isEmpty {
         /this exch def
         true
@@ -47,7 +47,7 @@
 } class
 
 /Report {
-    /init {
+    /__init__ {
         /this exch def
         /vals exch def
         /this .rows [ ] def
@@ -59,7 +59,7 @@
             row .isEmpty { break } if
         } loop
         this
-    } magic
+    } macro
     /extrapolate {
         /this exch def
         /val -1 def

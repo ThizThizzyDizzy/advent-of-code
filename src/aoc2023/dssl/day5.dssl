@@ -2,19 +2,19 @@
 /input 5 readDay def
 
 /MapResult {
-    /init {
+    /__init__ {
         /this exch def
         /this .len exch def
         /this .val exch def
         this
-    } magic
+    } macro
 } class
 /Map {
-    /init {
+    /__init__ {
         /this exch def
         /this .ranges [ ] def
         this
-    } magic
+    } macro
     /map {
         /this exch def
         /i exch def
@@ -34,13 +34,13 @@
     } macro
 } class
 /Rang {
-    /init {
+    /__init__ {
         /this exch def
         /this .len exch def
         /this .dst exch def
         /this .src exch def
         this
-    } magic
+    } macro
     /map {
         /this exch def
         /i exch def

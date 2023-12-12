@@ -2,7 +2,7 @@
 /input 2 readDay def
 
 /Round {
-    /init {
+    /__init__ {
         /this exch def
         /str exch def
         /this .r 0 def
@@ -16,11 +16,11 @@
             pop exch Int cast +=
         } foreach
         this
-    } magic
+    } macro
 } class
 
 /Game {
-    /init {
+    /__init__ {
         /this exch def
         /str exch def
         /this .rounds [ ] def
@@ -40,7 +40,7 @@
         this .g 0 > { /this .power this .g *= } if
         this .b 0 > { /this .power this .b *= } if
         this
-    } magic
+    } macro
 } class
 
 /games [ ] def

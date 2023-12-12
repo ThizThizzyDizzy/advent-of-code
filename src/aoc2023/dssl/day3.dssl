@@ -6,7 +6,7 @@
 /symbols [ ] def
 
 /Symbol {
-    /init {
+    /__init__ {
         /this exch def
         /this .y exch def
         /this .x exch def
@@ -14,7 +14,7 @@
         /this .value 1 def
         /this .count 0 def
         this
-    } magic
+    } macro
 } class
 
 /nonSymbols "1234567890." def

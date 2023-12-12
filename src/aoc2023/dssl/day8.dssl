@@ -25,17 +25,17 @@
 steps println
 
 /Node {
-    /init {
+    /__init__ {
         /this exch def
         /this .step exch def
         /this .idx exch def
         /this .node exch def
         this
-    } magic
+    } macro
 } class
 
 /Path {
-    /init {
+    /__init__ {
         /this exch def
         /lastNodes [ ] def
         /node exch def
@@ -65,7 +65,7 @@ steps println
             } if
         } loop
         this
-    } magic
+    } macro
 } class
 
 /paths [ ] def

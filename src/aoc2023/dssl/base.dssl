@@ -37,3 +37,27 @@ $math include
         str s i startsWithOffset { pop i break } if
     } for
 } macro
+/enum {
+    /clazz exch def
+    /consts exch def
+    /lbl exch def
+    lbl clazz class
+    [ consts exec ]
+    dup .size /size exch def
+    .unpack
+    /values [ ] def
+    lbl .values values def
+    ( 0 size 2 / ) {
+        pop
+        dup values .push
+        def
+    } foreach
+} macro
+/doWhile {
+    /while exch def
+    /do exch def
+    {
+        do exec
+        while exec ! { break } if
+    } loop
+} macro

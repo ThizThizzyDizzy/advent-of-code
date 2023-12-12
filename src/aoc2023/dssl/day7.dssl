@@ -47,7 +47,7 @@
 } macro
 
 /Hand {
-    /init {
+    /__init__ {
         /this exch def
         /this .bet exch def
         /this .hand exch def
@@ -59,7 +59,7 @@
             t this .jokerType < { /this .jokerType t = } if
         } for
         this
-    } magic
+    } macro
     /compareTo {
         /this exch def
         /other exch def

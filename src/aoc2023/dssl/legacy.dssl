@@ -1,6 +1,16 @@
 /get { exch .get } macro
-/add { exch .push } macro
+/add { exch .add } macro
 /set { .set } macro
 /remove { exch .remove } macro
 /split { exch .split } macro
 /unpack { { } foreach } macro
+/List .add {
+    /this exch def
+    this .push
+} macro
+/containsEq {
+    /lst exch def
+    /elem exch def
+    false
+    lst { elem == { pop true break } if } foreach
+} macro
