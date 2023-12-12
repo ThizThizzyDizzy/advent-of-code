@@ -1,0 +1,68 @@
+"base.dssl" include
+/input 11 readDay def
+
+/Galaxy {
+    /__init__ {
+        /this exch def
+        /this .y exch def
+        /this .x exch def
+        this
+    } macro
+} class
+
+/galaxies [ ] def
+/xGaps [ ] def
+/yGaps [ ] def
+/lines input "\n" split def
+/y ( 0 lines .size ) {
+    /line lines y get def
+    /x ( 0 line .size ) {
+        /c line x get def
+        c '#' == {
+            galaxies x y Galaxy new add
+        } if
+    } for
+} for
+
+/gx ( 0 lines 0 get .size 2 * ) {
+    false
+    /galaxy galaxies {
+        galaxy .x gx == { pop true break } if
+    } for
+    { continue } if
+    xGaps gx add
+} for
+/gy ( 0 lines .size 2 * ) {
+    false
+    /galaxy galaxies {
+        galaxy .y gy == { pop true break } if
+    } for
+    { continue } if
+    yGaps gy add
+} for
+
+/calc {
+    /gapSize exch def
+    /total 0 def
+    /g1 galaxies {
+        /g2 galaxies {
+            g1 g2 == { break } if
+            /dist g1 .x g2 .x - abs g1 .y g2 .y - abs + def
+            /x1 g1 .x g2 .x min def
+            /x2 g1 .x g2 .x max def
+            /y1 g1 .y g2 .y min def
+            /y2 g1 .y g2 .y max def
+            ( x1 x2 1 + ) {
+                xGaps .contains { /dist gapSize += } if
+            } foreach
+            ( y1 y2 1 + ) {
+                yGaps .contains { /dist gapSize += } if
+            } foreach
+            /total dist +=
+        } for
+    } for
+    total
+} macro
+
+1 calc println
+999999 calc println

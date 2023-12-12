@@ -61,7 +61,6 @@ public class Day10 extends Day{
         System.out.println(interiorChecks.size());
     }
     private void validateInterior(){
-        System.out.println("ValidateInterior called with "+interiorChecks.size());
         ArrayList<Point> newInteriorChecks = new ArrayList<>();
         for(Point check : interiorChecks){
             if(loop.contains(check))continue;
@@ -69,7 +68,6 @@ public class Day10 extends Day{
             newInteriorChecks.add(check);
         }
         interiorChecks = newInteriorChecks;
-        System.out.println("ValidateInterior ended with "+interiorChecks.size());
     }
     private Pipe getPipe(int x, int y){
         try{
