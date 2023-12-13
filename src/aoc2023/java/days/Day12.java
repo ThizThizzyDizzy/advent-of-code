@@ -2,8 +2,6 @@ package aoc2023.java.days;
 import aoc2023.java.Day;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 public class Day12 extends Day{
     public Day12(){
         super(12);
@@ -17,36 +15,21 @@ public class Day12 extends Day{
             String[] key = parts[1].split(",");
             int[] nums = new int[key.length];
             for(int i = 0; i<key.length; i++)nums[i] = Integer.parseInt(key[i]);
-            long possible = calcPossibilities(pattern, nums, 0, 0);
-            total+=possible;
+            total+=calcPossibilities(pattern, nums, 0, 0);
         }
         System.out.println(total);
-        long[] totaL = new long[1];
-        long[] completed = new long[1];
+        total = 0;
         long n = 0;
         for(String line : input.split("\n")){
             n++;
-            String lin = line;
             String[] parts = line.split(" ");
             String pattern = ("?"+parts[0]).repeat(5).substring(1);
             String[] key = (","+parts[1]).repeat(5).substring(1).split(",");
             int[] nums = new int[key.length];
             for(int i = 0; i<key.length; i++)nums[i] = Integer.parseInt(key[i]);
-            long possible = calcPossibilities(pattern, nums, 0, 0);
-            synchronized(completed){
-                totaL[0]+=possible;
-                completed[0]++;
-                System.out.println(completed[0]+" done ("+possible+") - "+pattern);
-            }
+            total+=calcPossibilities(pattern, nums, 0, 0);
         }
-        while(completed[0]<n){
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Day12.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        System.out.println(totaL[0]);
+        System.out.println(total);
     }
     HashMap<String, Long> calcCache = new HashMap<>();
     private long calcPossibilities(String pattern, int[] key, int patternOffset, int keyOffset){
@@ -66,16 +49,14 @@ public class Day12 extends Day{
         }
         long possibilities = 0;
         int idx = -1;
-        int startOff = 0;
         if(patternOffset<pattern.length()){
             String shorterPattern = pattern.substring(patternOffset);
             int id = shorterPattern.indexOf("#");
             idx = id==-1?-1:(patternOffset+Math.min(shorterPattern.length(), id+1));
         }
-        for(int x = patternOffset+startOff; x<(idx==-1?pattern.length():idx); x++){
+        for(int x = patternOffset; x<(idx==-1?pattern.length():idx); x++){
             if(fits(pattern, x, key[keyOffset])){
-                long psb = calcPossibilities(pattern, key, x+key[keyOffset]+1, keyOffset+1);
-                possibilities+=psb;
+                possibilities+=calcPossibilities(pattern, key, x+key[keyOffset]+1, keyOffset+1);
             }
         }
         calcCache.put(str, possibilities);
@@ -87,8 +68,7 @@ public class Day12 extends Day{
         if(pattern.length()<num)return false;
         if(pattern.length()>num&&pattern.charAt(num)=='#')return false;
         for(int i = 0; i<num; i++){
-            char c = pattern.charAt(i);
-            if(c=='.')return false;
+            if(pattern.charAt(i)=='.')return false;
         }
         return true;
     }

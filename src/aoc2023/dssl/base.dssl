@@ -17,10 +17,7 @@ $math include
     start str .startsWith
 } macro
 /substring {
-    /start exch def
-    /str exch def
-    
-    "" str { start 0 > { pop /start 1 -= } { ~ } ifelse } foreach
+    exch dup .size exch .slice
 } macro
 /for {
     /func exch def
@@ -29,14 +26,15 @@ $math include
     lbl 0 def
     iter { lbl exch = func exec } foreach
 } macro
-/indexOf {
+/* set to true to use native java implementation */
+/indexOf false { { exch "java.lang.String.indexOf" native } } { {
     /s exch String cast def
     /str exch String cast def
     -1
     /i ( 0 str .size ) {
         str s i startsWithOffset { pop i break } if
     } for
-} macro
+} } ifelse macro
 /enum {
     /clazz exch def
     /consts exch def

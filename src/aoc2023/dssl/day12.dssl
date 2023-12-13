@@ -1,0 +1,82 @@
+"base.dssl" include
+/input 12 readDay def
+
+/calcCache [| |] def
+/calcPossibilities {
+    /keyOffset exch def
+    /patternOffset exch def
+    /key exch def
+    /pattern exch def
+    /str pattern "|" ~ key String cast ~ "|" ~ patternOffset ~ "|" ~ keyOffset ~ def
+    /l calcCache str get def
+    str calcCache .containsKey ! {
+        keyOffset key .size == {
+            /result pattern patternOffset pattern .size min substring "#" exch .contains { 0 } { 1 } ifelse def
+            str result calcCache .put
+            result
+        } {
+           /totalLen -1 def
+           /k ( keyOffset key .size ) { /totalLen key k get 1 + += } for 
+           totalLen patternOffset + pattern .size > {
+               str 0 calcCache .put
+               0
+           } {
+               /possibilities 0 def
+               /idx -1 def
+               patternOffset pattern .size < {
+                   /shorterPattern pattern patternOffset substring def
+                   /id shorterPattern "#" indexOf def
+                   /idx id -1 == { -1 } { patternOffset shorterPattern .size id 1 + min + } ifelse =
+               } if
+               /x ( patternOffset idx -1 == { pattern .size } { idx } ifelse ) {
+                   pattern x key keyOffset get fits {
+                       /possibilities pattern key x key keyOffset get + 1 + keyOffset 1 + calcPossibilities +=
+                   } if
+               } for
+               str possibilities calcCache .put
+               possibilities
+           } ifelse
+        } ifelse
+    } { l } ifelse
+} macro
+/fits {
+    /num exch def
+    /patternOffset exch def
+    /fullPattern exch def
+    patternOffset 0 > dup { fullPattern patternOffset 1 - get '#' == } { false } ifelse & { false } {
+        /pattern fullPattern patternOffset substring def
+        pattern .size num < { false } {
+            pattern .size num > dup { pattern num get '#' == } { false } ifelse & {
+                false
+            } {
+                true
+                /i ( 0 num ) {
+                    pattern i get '.' == {
+                        pop false break
+                    } if
+                } for
+            } ifelse
+        } ifelse
+    } ifelse
+} macro
+
+/total 0 def
+/line input "\n" split {
+    /parts line " " split def
+    /pattern parts 0 get def
+    /key parts 1 get "," split def
+    /nums [ key { Int cast } foreach ] def
+    /total pattern nums 0 0 calcPossibilities +=
+} for
+total println
+/total 0 =
+/n 0 def
+/lin input "\n" split {
+    /n ++
+    /parts lin " " split def
+    /pattern "?" parts 0 get ~ 4 { dup ~ } repeat 1 substring def
+    /key "," parts 1 get ~ 4 { dup ~ } repeat 1 substring "," split def
+    /nums [ key { Int cast } foreach ] def
+    /total pattern nums 0 0 calcPossibilities +=
+} for
+total println
