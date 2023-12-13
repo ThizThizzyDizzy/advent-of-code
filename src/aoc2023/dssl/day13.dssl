@@ -1,0 +1,103 @@
+"base.dssl" include
+/input 13 readDay def
+
+/transpose {
+    /lines exch def
+    /cols [ lines 0 get .size { "" } repeat ] def
+    /s lines {
+        /i ( 0 s .size ) {
+            i s i get cols i get ~ cols set
+        } for
+    } for
+    cols
+} macro
+/smudge {
+    /pattern exch def
+    /smudged [ ] def
+    /i ( 0 pattern .size ) {
+        /left 0 i pattern .slice def
+        /right pattern i 1 + substring def
+        /c pattern i get def
+        c '.' == { smudged left '#' ~ right ~ add } if
+        c '#' == { smudged left '.' ~ right ~ add } if
+    } for
+    smudged
+} macro
+
+/total 0 def
+/patterns input "\n\n" split def
+/was [ patterns .size { 0 } repeat ] def
+/i ( 0 patterns .size ) {
+    /pattern patterns i get def
+    /lines pattern "\n" split def
+    /y ( 1 lines .size ) {
+        /yMatches true def
+        /dy ( 0 lines .size ) {
+            /left y dy - 1 - def
+            /right y dy + def
+            left 0 < right lines .size >= | { break } if
+            /yMatches lines left get lines right get == &=
+        } for
+        yMatches {
+            i y 100 * was set
+            /total y 100 * +=
+            break
+        } if
+    } for
+    /cols lines transpose def
+    /x ( 1 cols .size ) {
+        /xMatches true def
+        /dx ( 0 cols .size ) {
+            /left x dx - 1 - def
+            /right x dx + def
+            left 0 < right cols .size >= | { break } if
+            /xMatches cols left get cols right get == &=
+        } for
+        xMatches {
+            i x was set
+            /total x +=
+            break
+        } if
+    } for
+} for
+total println
+/total 0 =
+/i2 ( 0 patterns .size ) {
+    /pattern patterns i2 get smudge {
+        /lines pattern "\n" split def
+        false
+        /y ( 1 lines .size ) {
+            /yMatches true def
+            /dy ( 0 lines .size ) {
+                /left y dy - 1 - def
+                /right y dy + def
+                left 0 < right lines .size >= | { break } if
+                /yMatches lines left get lines right get == &=
+            } for
+            yMatches {
+                was i2 get y 100 * == { continue } if
+                /total y 100 * +=
+                pop true break
+            } if
+        } for
+        { break } if
+        /cols lines transpose def
+        false
+        /x ( 1 cols .size ) {
+            /xMatches true def
+            /dx ( 0 cols .size ) {
+                /left x dx - 1 - def
+                /right x dx + def
+                left 0 < right cols .size >= | { break } if
+                /xMatches cols left get cols right get == &=
+            } for
+            xMatches {
+                was i2 get x == { continue } if
+                /total x +=
+                pop true break
+            } if
+        } for
+        { break } if
+    } for
+} for
+total println
