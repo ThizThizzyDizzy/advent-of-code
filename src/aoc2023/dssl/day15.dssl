@@ -1,0 +1,70 @@
+"base.dssl" include
+/input 15 readDay def
+
+/Box {
+    /__init__ {
+        /this exch def
+        /this .lenses [ ] def
+        this
+    } macro
+} class
+/Lens {
+    /__init__ {
+        /this exch def
+        /this .focalLen exch def
+        /this .label exch def
+        this
+    } macro
+} class
+/hash {
+    /str exch def
+    /current 0 def
+    /c str {
+        c '\n' == { continue } if
+        /val c Int cast def
+        /current val +=
+        /current 17 *=
+        /current 256 %=
+    } for
+    current
+} macro
+
+/strs "\n" "" input .replace "," split def
+0 strs { hash + } foreach println
+
+/boxes [ 256 { Box new } repeat ] def
+/step strs {
+    /label step "[-=]" split 0 get def
+    /box boxes label hash get def
+    "-" step .contains {
+        /toRem 0 def
+        /lens box .lenses {
+            lens .label label == {
+                /toRem lens =
+            } if
+        } for
+        toRem 0 == ! {
+            toRem box .lenses .indexOf box .lenses .remove
+        } if
+    } {
+        /focalLen step step "=" indexOf 1 + substring Int cast def
+        /lens label focalLen Lens new def
+        false
+        /i ( 0 box .lenses .size ) {
+            box .lenses i get .label lens .label == {
+                i lens box .lenses .set
+                pop true break
+            } if
+        } for
+        { continue } if
+        box .lenses lens add
+    } ifelse
+} for
+/total 0 def
+/boxID ( 0 256 ) {
+    /box boxes boxID get def
+    /lensID ( 0 box .lenses .size ) {
+        /total boxID 1 + lensID 1 + * box .lenses lensID get .focalLen * +=
+    } for
+} for
+total println
