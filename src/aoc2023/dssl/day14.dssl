@@ -1,0 +1,66 @@
+"base.dssl" include
+/input 14 readDay def
+
+/interval -1 def
+/strings [ ] def
+
+/reMap {
+    [ exch { List cast } foreach ]
+} macro
+/cycle {
+    /map exch def
+    /s map String cast def
+    /interval s strings .lastIndexOf s strings .indexOf - =
+    interval 0 <= { strings s add } if
+    map 0 -1 tilt
+    map -1 0 tilt
+    map 0 1 tilt
+    map 1 0 tilt
+} macro
+/tilt {
+    /dy exch def
+    /dx exch def
+    /map exch def
+    /change false def
+    {
+        /change false =
+        /y ( 0 map .size ) {
+            y 0 == dy 0 < & { /y ++ } if
+            y map .size 1 - == dy 0 > & { continue } if
+            /x ( 0 map y get .size ) {
+                x 0 == dx 0 < & { /x ++ } if
+                x map y get .size 1 - == dx 0 > & { continue } if
+                map y get x get 'O' == map y dy + get x dx + get '.' == & {
+                    x dx + map y get x get map y dy + get set
+                    x '.' map y get set
+                    /change true =
+                } if
+            } for
+        } for
+        change ! { break } if
+    } loop
+} macro
+/load {
+    /map exch def
+    /val 0 def
+    /i ( 0 map .size ) {
+        /rockLoad map .size i - def
+        map i get { 'O' == { /val rockLoad += } if } foreach
+    } for
+    val
+} macro
+
+/map input "\n" split reMap def
+map 0 -1 tilt
+map load println
+/map input "\n" split reMap =
+/idx 0 def
+{
+    /idx ++
+    map cycle
+    interval 0 > { /idx 0 1000000000 idx - interval / 1 - max interval * += } if
+    idx 1000000000 >= {
+        break
+    } if
+} loop
+map load println
