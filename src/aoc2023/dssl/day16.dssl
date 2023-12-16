@@ -1,0 +1,88 @@
+"base.dssl" include
+/input 16 readDay def
+/lines input "\n" split def
+/tiles [ lines 0 get .size { [ lines .size { null } repeat ] } repeat ] def
+/Tile {
+    /__init__ {
+        /this exch def
+        /this .c exch def
+        /this .y exch def
+        /this .x exch def
+        /this .energized [ false false false false ] def
+        this
+    } macro
+    /energize {
+        /this exch def
+        /dy exch def
+        /dx exch def
+        /dirIdx -1 def
+        dy 0 < { /dirIdx 0 = } if
+        dx 0 > { /dirIdx 1 = } if
+        dy 0 > { /dirIdx 2 = } if
+        dx 0 < { /dirIdx 3 = } if
+        this .energized dirIdx get ! {
+            dirIdx true this .energized .set
+            this .c '.' == { x dx + y dy + dx dy energizeTile } if
+            this .c '/' == { x dy - y dx - 0 dy - 0 dx - energizeTile } if
+            this .c '\\' == { x dy + y dx + dy dx energizeTile } if
+            this .c '-' == this .c '|' == | {
+                /splt false def
+                this .c '-' == { /splt dx 0 == = } if
+                this .c '|' == { /splt dy 0 == = } if
+                splt {
+                    x dy + y dx + dy dx energizeTile
+                    x dy - y dx - 0 dy - 0 dx - energizeTile
+                } {
+                    x dx + y dy + dx dy energizeTile
+                } ifelse
+            } if
+        } if
+    } macro
+} class
+/energizeTile {
+    /dy exch def
+    /dx exch def
+    /y exch def
+    /x exch def
+    x 0 < y 0 < x tiles .size >= y tiles 0 get .size >= | | | ! {
+        dx dy tiles x get y get .energize
+    } if
+} macro
+/count {
+    /total 0 def
+    tiles { { .energized { { /total ++ break } if } foreach } foreach } foreach
+    total
+} macro
+/reset {
+    tiles { {
+        /t exch def
+        /t .energized [ false false false false ] =
+    } foreach } foreach
+} macro
+( 0 lines .size ) {
+    /y exch def
+    ( 0 lines y get .size ) {
+        /x exch def
+        y x y lines y get x get Tile new tiles x get set
+    } foreach
+} foreach
+0 0 1 0 energizeTile
+/mx count def
+mx println
+/x ( 0 tiles .size ) {
+    reset
+    x 0 0 1 energizeTile
+    /mx mx count max =
+    reset
+    x tiles 0 get .size 1 - 0 -1 energizeTile
+    /mx mx count max =
+} for
+/y ( 0 tiles 0 get .size ) {
+    reset
+    0 y 1 0 energizeTile
+    /mx mx count max =
+    reset
+    tiles .size 1 - y -1 0 energizeTile
+    /mx mx count max =
+} for
+mx println
